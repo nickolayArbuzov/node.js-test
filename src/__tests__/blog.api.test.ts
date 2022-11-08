@@ -1,20 +1,34 @@
 import request from 'supertest'
-import { app, startServer } from '../index'
+import { app } from '../index'
+import { runDb } from '../repositories/db'
+
+
+const port = 4444
+const startServer = async () => {
+    await runDb()
+    return app.listen(port, () => {
+        console.log(`App listening on port ${port}`)
+    })
+}
+
+
 
 jest.setTimeout(60000)
 describe('/blogs', () => {
 
+    const server = startServer()
+
     let inputModelBlog1 = {
         name: 'name',
-        youtubeUrl: 'youtubeUrl-1',
+        youtubeUrl: 'https://someurl1.com',
     }
     let inputModelBlog2 = {
         name: 'name-2',
-        youtubeUrl: 'youtubeUrl-2',
+        youtubeUrl: 'https://someurl2.com',
     }
     let updateModelBlog = {
         name: 'name-10',
-        youtubeUrl: 'youtubeUrl-10',
+        youtubeUrl: 'https://someurl10.com',
     }
 
     it('should delete all data', async () => {
@@ -26,25 +40,25 @@ describe('/blogs', () => {
             .post('/blogs')
             .send(inputModelBlog1).expect(201)
 
-        expect(res.body).toStrictEqual([
+        expect(res.body).toStrictEqual(
             {
                 id: expect.any(String),
                 name: inputModelBlog1.name,
                 youtubeUrl: inputModelBlog1.youtubeUrl,
             },
-        ])
+        )
     })
 
     
     it('should return errors if values incorrect', async () => {
         await request(app).post('/blogs').send({}).expect(400, 
             {errorMessages: [
-                { message: 'incorrect name', field: 'name' },
-                { message: 'incorrect youtubeUrl', field: 'youtubeUrl' },
+                { message: 'field must be from 1 to 15 chars', field: 'name' },
+                { message: 'Invalid URL', field: 'youtubeUrl' },
             ]})
     })
 
-    it('should return all blogs', async () => {
+    /*it('should return all blogs', async () => {
         await request(app)
             .post('/blogs')
             .send(inputModelBlog2).expect(201)
@@ -157,6 +171,8 @@ describe('/blogs', () => {
             .get(`/blogs`)
         
         expect(res.body.length).toBe(1)
-    })
+    })*/
+
+    server.then((server) => server.close())
 
 })

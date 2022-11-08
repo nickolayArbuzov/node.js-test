@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { app, startServer } from '../index'
+import { app } from '../index'
 
 /*jest.setTimeout(60000)
 describe('/video', () => {

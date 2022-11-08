@@ -4,7 +4,7 @@ import { BlogsRepo } from '../repositories/blogsRepo';
 
 const isValidUrl: CustomValidator = value => {
     if(!/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(value)){
-        throw new Error('Invalid URL!')
+        throw new Error('Invalid URL')
     }
     return true
 };
@@ -21,7 +21,9 @@ const isBlogIdValid: CustomValidator = async value => {
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     if(!errors.isEmpty()) {
-        res.status(400).send({errors: errors.array()})
+        res.status(400).send({errorMessages: errors.array({onlyFirstError: true}).map(e => {
+            return {message: e.msg, field: e.param}
+        })})
     } else {
         next()
     }

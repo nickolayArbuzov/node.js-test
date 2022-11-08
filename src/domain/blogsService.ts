@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { BlogsRepo } from "../repositories/blogsRepo";
-import { CreateBlog, UpdateBlog } from "./entities/blog";
+import { blogType } from "../types";
 
 @injectable()
 export class BlogsService {
@@ -12,15 +12,19 @@ export class BlogsService {
     }
 
     async create(name: string, youtubeUrl: string){
-        const blog = new CreateBlog(name, youtubeUrl)
-        this.blogsRepo.create(blog)
+        const blog: blogType = {
+            name: name,
+            youtubeUrl: youtubeUrl,
+            createdAt: new Date().toISOString()
+        }
+        return await this.blogsRepo.create(blog)
     }
 
     async findById(id: string){
         return await this.blogsRepo.findById(id)
     }
 
-    async update(id: string, blog: UpdateBlog){
+    async update(id: string, blog: blogType){
         return await this.blogsRepo.update(id, blog)
     }
 

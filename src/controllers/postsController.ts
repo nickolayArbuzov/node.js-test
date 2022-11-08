@@ -13,7 +13,7 @@ export class PostsController {
     }
 
     async create(req: Request, res: Response){
-        this.postsService.create(req.body.title, req.body.shortDecription, req.body.content, req.body.blogId)
+        this.postsService.create(req.body.title, req.body.shortDecription, req.body.content, req.body.blogId, req.body.blogId)
     }
 
     async findById(req: Request, res: Response){

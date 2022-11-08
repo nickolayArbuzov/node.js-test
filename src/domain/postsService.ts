@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { PostsRepo } from "../repositories/postsRepo";
-import { Post } from "./entities/post";
+import { postType } from "../types";
 
 @injectable()
 export class PostsService {
@@ -11,8 +11,16 @@ export class PostsService {
         return await this.postsRepo.find()
     }
 
-    async create(title: string, shortDecription: string, content: string, blogId: string){
-        const post = new Post(title, shortDecription, content, blogId)
+    async create(title: string, shortDescription: string, content: string, blogId: string, blogName: string){
+
+        const post: postType = {
+            title: title,
+            shortDescription: shortDescription,
+            content: content,
+            blogId: blogId,
+            blogName: blogName,
+            createdAt: new Date().toISOString()
+        }
         this.postsRepo.create(post)
     }
 
@@ -20,7 +28,7 @@ export class PostsService {
         return await this.postsRepo.findById(id)
     }
 
-    async update(id: string, post: Post){
+    async update(id: string, post: postType){
         return await this.postsRepo.update(id, post)
     }
 
