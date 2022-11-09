@@ -59,6 +59,7 @@ describe('/blogs', () => {
 
         expect(res.body).toStrictEqual(
             {
+                createdAt: expect.any(String),
                 id: expect.any(String),
                 name: inputModelBlog1.name,
                 youtubeUrl: inputModelBlog1.youtubeUrl,
@@ -83,6 +84,7 @@ describe('/blogs', () => {
 
         expect(res.body).toStrictEqual(
             {
+                createdAt: expect.any(String),
                 id: expect.any(String),
                 title: inputModelPost1.title,
                 shortDescription: inputModelPost1.shortDescription,
@@ -105,11 +107,13 @@ describe('/blogs', () => {
 
         expect(res.body).toStrictEqual([
                 {
+                    createdAt: expect.any(String),
                     id: expect.any(String),
                     name: inputModelBlog1.name,
                     youtubeUrl: inputModelBlog1.youtubeUrl,
                 }, 
                 {
+                    createdAt: expect.any(String),
                     id: expect.any(String),
                     name: inputModelBlog2.name,
                     youtubeUrl: inputModelBlog2.youtubeUrl,
@@ -129,6 +133,7 @@ describe('/blogs', () => {
 
         expect(res.body).toStrictEqual([
                 {
+                    createdAt: expect.any(String),
                     id: expect.any(String),
                     title: inputModelPost1.title,
                     shortDescription: inputModelPost1.shortDescription,
@@ -137,6 +142,7 @@ describe('/blogs', () => {
                     blogName: blogId,
                 }, 
                 {
+                    createdAt: expect.any(String),
                     id: expect.any(String),
                     title: inputModelPost2.title,
                     shortDescription: inputModelPost2.shortDescription,
@@ -157,6 +163,7 @@ describe('/blogs', () => {
 
         expect(res.body).toStrictEqual(
             {
+                createdAt: expect.any(String),
                 id: resGet.body[1].id,
                 name: inputModelBlog2.name,
                 youtubeUrl: inputModelBlog2.youtubeUrl,
@@ -173,6 +180,7 @@ describe('/blogs', () => {
 
         expect(res.body).toStrictEqual(
             {
+                createdAt: expect.any(String),
                 id: expect.any(String),
                 title: inputModelPost2.title,
                 shortDescription: inputModelPost2.shortDescription,
@@ -209,6 +217,7 @@ describe('/blogs', () => {
         
         expect(res.body).toStrictEqual(
             {
+                createdAt: expect.any(String),
                 id: expect.any(String),
                 name: updateModelBlog.name,
                 youtubeUrl: updateModelBlog.youtubeUrl,
@@ -231,6 +240,7 @@ describe('/blogs', () => {
         
         expect(res.body).toStrictEqual(
             {
+                createdAt: expect.any(String),
                 id: resGet.body[0].id,
                 title: updateModelPost.title,
                 shortDescription: updateModelPost.shortDescription,

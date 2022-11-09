@@ -6,7 +6,7 @@ import { postCollection } from "./db";
 @injectable()
 export class PostsRepo {
     async find(){
-        const posts = await postCollection.find().project({createdAt: 0}).toArray()
+        const posts = await postCollection.find().toArray()
         return posts.map(p => {
             //@ts-ignore
             delete Object.assign(p, {["id"]: p["_id"] })["_id"];
@@ -19,6 +19,7 @@ export class PostsRepo {
         return {
             //@ts-ignore
             id: post._id,
+            createdAt: post.createdAt,
             title: post.title,
             shortDescription: post.shortDescription,
             content: post.content,
@@ -32,6 +33,7 @@ export class PostsRepo {
         if(post) {
             return {
                 id: post._id,
+                createdAt: post.createdAt,
                 title: post.title,
                 shortDescription: post.shortDescription,
                 content: post.content,
