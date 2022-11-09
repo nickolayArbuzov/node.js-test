@@ -18,14 +18,29 @@ export class BlogsController {
     }
 
     async findById(req: Request, res: Response){
-        this.blogsService.findById(req.params.id)
+        const blog = await this.blogsService.findById(req.params.id)
+        if(blog) {
+            res.status(200).send(blog)
+        } else {
+            res.sendStatus(404)
+        }
     }
 
     async update(req: Request, res: Response){
-        this.blogsService.update(req.params.id, req.body)
+        const result = await this.blogsService.update(req.params.id, req.body)
+        if(result) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404)
+        }
     }
 
     async delete(req: Request, res: Response){
-        this.blogsService.delete(req.params.id)
+        const result = await this.blogsService.delete(req.params.id)
+        if(result) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404)
+        }
     }
 }

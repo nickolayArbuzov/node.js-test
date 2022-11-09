@@ -2,7 +2,6 @@ import request from 'supertest'
 import { app } from '../index'
 import { runDb } from '../repositories/db'
 
-
 const port = 4444
 const startServer = async () => {
     await runDb()
@@ -11,15 +10,16 @@ const startServer = async () => {
     })
 }
 
-
-
 jest.setTimeout(60000)
 describe('/blogs', () => {
 
     const server = startServer()
 
+    let blogId = ''
+    const incorrectBlogId = '036b26ccc6049bc21dec991e'
+
     let inputModelBlog1 = {
-        name: 'name',
+        name: 'name-1',
         youtubeUrl: 'https://someurl1.com',
     }
     let inputModelBlog2 = {
@@ -29,6 +29,22 @@ describe('/blogs', () => {
     let updateModelBlog = {
         name: 'name-10',
         youtubeUrl: 'https://someurl10.com',
+    }
+
+    let inputModelPost1 = {
+        title: "title-1",
+        shortDescription: "shortDescription-1",
+        content: "content-1",
+    }
+    let inputModelPost2 = {
+        title: "title-2",
+        shortDescription: "shortDescription-2",
+        content: "content-2",
+    }
+    let updateModelPost = {
+        title: "title-10",
+        shortDescription: "shortDescription-10",
+        content: "content-10",
     }
 
     it('should delete all data', async () => {
@@ -47,10 +63,10 @@ describe('/blogs', () => {
                 youtubeUrl: inputModelBlog1.youtubeUrl,
             },
         )
+        blogId = res.body.id
     })
 
-    
-    it('should return errors if values incorrect', async () => {
+    it('should return errors if values of blogs incorrect', async () => {
         await request(app).post('/blogs').send({}).expect(400, 
             {errorMessages: [
                 { message: 'field must be from 1 to 15 chars', field: 'name' },
@@ -58,7 +74,24 @@ describe('/blogs', () => {
             ]})
     })
 
-    /*it('should return all blogs', async () => {
+    it('should return added post if values correct', async () => {
+        const res = await request(app)
+            .post('/posts')
+            .send({...inputModelPost1, blogId: blogId}).expect(201)
+
+        expect(res.body).toStrictEqual(
+            {
+                id: expect.any(String),
+                title: inputModelPost1.title,
+                shortDescription: inputModelPost1.shortDescription,
+                content: inputModelPost1.content,
+                blogId: blogId,
+                blogName: blogId,
+            },
+        )
+    })
+
+    it('should return all blogs', async () => {
         await request(app)
             .post('/blogs')
             .send(inputModelBlog2).expect(201)
@@ -75,8 +108,37 @@ describe('/blogs', () => {
                 }, 
                 {
                     id: expect.any(String),
-                    name: inputModelBlog1.name,
-                    youtubeUrl: inputModelBlog1.youtubeUrl,
+                    name: inputModelBlog2.name,
+                    youtubeUrl: inputModelBlog2.youtubeUrl,
+                },
+            ])
+    })
+
+    it('should return all posts', async () => {
+        await request(app) 
+            .post('/posts')
+            .send({...inputModelPost2, blogId: blogId}).expect(201)
+
+        const res = await request(app)
+            .get('/posts')
+            .expect(200)
+
+        expect(res.body).toStrictEqual([
+                {
+                    id: expect.any(String),
+                    title: inputModelPost1.title,
+                    shortDescription: inputModelPost1.shortDescription,
+                    content: inputModelPost1.content,
+                    blogId: blogId,
+                    blogName: blogId,
+                }, 
+                {
+                    id: expect.any(String),
+                    title: inputModelPost2.title,
+                    shortDescription: inputModelPost2.shortDescription,
+                    content: inputModelPost2.content,
+                    blogId: blogId,
+                    blogName: blogId,
                 },
             ])
     })
@@ -90,16 +152,41 @@ describe('/blogs', () => {
             .expect(200)
 
         expect(res.body).toStrictEqual(
-            [{
+            {
                 id: resGet.body[1].id,
                 name: inputModelBlog2.name,
                 youtubeUrl: inputModelBlog2.youtubeUrl,
-            }])
+            })
+    })
+
+    it('should return one post', async () => {
+        const resGet = await request(app)
+            .get('/posts')
+
+        const res = await request(app)
+            .get(`/posts/${resGet.body[1].id}`)
+            .expect(200)
+
+        expect(res.body).toStrictEqual(
+            {
+                id: expect.any(String),
+                title: inputModelPost2.title,
+                shortDescription: inputModelPost2.shortDescription,
+                content: inputModelPost2.content,
+                blogId: blogId,
+                blogName: blogId,
+            })
     })
 
     it('should return 404 if blog for get not found', async () => {
         await request(app)
-            .get(`/blogs/${3}`)
+            .get(`/blogs/${incorrectBlogId}`)
+            .expect(404)
+    })
+
+    it('should return 404 if post for get not found', async () => {
+        await request(app)
+            .get(`/posts/${incorrectBlogId}`)
             .expect(404)
     })
 
@@ -116,15 +203,39 @@ describe('/blogs', () => {
             .expect(200)
         
         expect(res.body).toStrictEqual(
-            [{
+            {
                 id: expect.any(String),
                 name: updateModelBlog.name,
                 youtubeUrl: updateModelBlog.youtubeUrl,
-            }]
+            }
         )
     })
 
-    it('should return errors if values incorrect', async () => {
+    it('should return update post if values correct', async () => {
+        const resGet = await request(app)
+            .get('/posts')
+
+        await request(app)
+            .put(`/posts/${resGet.body[0].id}`)
+            .send({...updateModelPost, blogId: blogId, blogName: blogId}).expect(204)
+
+        const res = await request(app)
+            .get(`/posts/${resGet.body[0].id}`)
+            .expect(200)
+        
+        expect(res.body).toStrictEqual(
+            {
+                id: resGet.body[0].id,
+                title: updateModelPost.title,
+                shortDescription: updateModelPost.shortDescription,
+                content: updateModelPost.content,
+                blogId: blogId,
+                blogName: blogId,
+            }
+        )
+    })
+
+    it('should return errors if values for update blog incorrect', async () => {
         const resGet = await request(app)
             .get('/blogs')
 
@@ -132,15 +243,37 @@ describe('/blogs', () => {
             .put(`/blogs/${resGet.body[0].id}`)
             .send({})
             .expect(400, {errorMessages: [
-                { message: 'incorrect name', field: 'name' },
-                { message: 'incorrect youtubeUrl', field: 'youtubeUrl' },
+                { message: 'field must be from 1 to 15 chars', field: 'name' },
+                { message: 'Invalid URL', field: 'youtubeUrl' },
+            ]})
+    })
+
+    it('should return errors if values for update post incorrect', async () => {
+        const resGet = await request(app)
+            .get('/posts')
+
+        await request(app)
+            .put(`/posts/${resGet.body[0].id}`)
+            .send({})
+            .expect(400, {errorMessages: [
+                { message: 'field must be from 1 to 30 chars', field: 'title' },
+                { message: 'field must be from 1 to 100 chars', field: 'shortDescription' },
+                { message: 'field must be from 1 to 1000 chars', field: 'content' },
+                { message: 'field must be string', field: 'blogId' },
             ]})
     })
 
     it('should return 404 if blog for put not found', async () => {
         await request(app)
-            .put(`/blogs/${4}`)
+            .put(`/blogs/${incorrectBlogId}`)
             .send(updateModelBlog)
+            .expect(404)
+    })
+
+    it('should return 404 if blog for put not found', async () => {
+        await request(app)
+            .put(`/posts/${incorrectBlogId}`)
+            .send({...updateModelPost, blogId: blogId, blogName: blogId})
             .expect(404)
     })
 
@@ -153,7 +286,7 @@ describe('/blogs', () => {
             .expect(204)
 
         await request(app)
-            .get(`/blogs/${2}`)
+            .get(`/blogs/${resGet.body[0].id}`)
             .expect(404)
 
         const res = await request(app)
@@ -162,16 +295,45 @@ describe('/blogs', () => {
         expect(res.body.length).toBe(1)
     })
 
+    it('should return status 204 if blog deleted', async () => {
+        const resGet = await request(app)
+            .get('/posts')
+
+        await request(app)
+            .delete(`/posts/${resGet.body[0].id}`)
+            .expect(204)
+
+        await request(app)
+            .get(`/posts/${resGet.body[0].id}`)
+            .expect(404)
+
+        const res = await request(app)
+            .get(`/posts`)
+        
+        expect(res.body.length).toBe(1)
+    })
+
     it('should return status 404 if blog for delete not found', async () => {
         await request(app)
-            .delete(`/blogs/${4}`)
+            .delete(`/blogs/${incorrectBlogId}`)
             .expect(404)
 
         const res = await request(app)
             .get(`/blogs`)
         
         expect(res.body.length).toBe(1)
-    })*/
+    })
+
+    it('should return status 404 if post for delete not found', async () => {
+        await request(app)
+            .delete(`/posts/${incorrectBlogId}`)
+            .expect(404)
+
+        const res = await request(app)
+            .get(`/posts`)
+        
+        expect(res.body.length).toBe(1)
+    })
 
     server.then((server) => server.close())
 

@@ -6,22 +6,49 @@ import { postCollection } from "./db";
 @injectable()
 export class PostsRepo {
     async find(){
-        return await postCollection.find({})
+        const posts = await postCollection.find().project({createdAt: 0}).toArray()
+        return posts.map(p => {
+            //@ts-ignore
+            delete Object.assign(p, {["id"]: p["_id"] })["_id"];
+            return p
+        })
     }
 
     async create(post: postType){
-        postCollection.insertOne(post)
+        await postCollection.insertOne(post)
+        return {
+            //@ts-ignore
+            id: post._id,
+            title: post.title,
+            shortDescription: post.shortDescription,
+            content: post.content,
+            blogId: post.blogId,
+            blogName: post.blogName,
+        }
     }
 
     async findById(id: string){
-        return await postCollection.findOne({_id: new ObjectId(id)})
+        const post = await postCollection.findOne({_id: new ObjectId(id)})
+        if(post) {
+            return {
+                id: post._id,
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: post.blogId,
+                blogName: post.blogId,
+            }
+        }
+        return false
     }
 
     async update(id: string, post: postType){
-        await postCollection.updateOne({_id: new ObjectId(id)}, post)
+        const result = await postCollection.updateOne({_id: new ObjectId(id)}, {$set: post})
+        return result.matchedCount === 1
     }
 
     async delete(id: string){
-        await postCollection.deleteOne({_id: new ObjectId(id)})
+        const result = await postCollection.deleteOne({_id: new ObjectId(id)})
+        return result.deletedCount === 1
     }
 }

@@ -6,7 +6,12 @@ import { blogCollection } from "./db";
 @injectable()
 export class BlogsRepo {
     async find(){
-        return await blogCollection.find({})
+        const blogs = await blogCollection.find().project({createdAt: 0}).toArray()
+        return blogs.map(b => {
+            //@ts-ignore
+            delete Object.assign(b, {["id"]: b["_id"] })["_id"];
+            return b
+        })
     }
 
     async create(blog: blogType){
@@ -20,14 +25,24 @@ export class BlogsRepo {
     }
 
     async findById(id: string){
-        return await blogCollection.findOne({_id: new ObjectId(id)})
+        const blog = await blogCollection.findOne({_id: new ObjectId(id)})
+        if(blog) {
+            return {
+                id: blog._id,
+                name: blog.name,
+                youtubeUrl: blog.youtubeUrl,
+            }
+        }
+        return false
     }
 
     async update(id: string, blog: blogType){
-        return await blogCollection.updateOne({_id: new ObjectId(id)}, blog)
+        const result = await blogCollection.updateOne({_id: new ObjectId(id)}, {$set: blog})
+        return result.matchedCount === 1
     }
 
     async delete(id: string){
-        return await blogCollection.deleteOne({_id: new ObjectId(id)})
+        const result = await blogCollection.deleteOne({_id: new ObjectId(id)})
+        return result.deletedCount === 1
     }
 }

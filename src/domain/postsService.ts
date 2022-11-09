@@ -21,7 +21,7 @@ export class PostsService {
             blogName: blogName,
             createdAt: new Date().toISOString()
         }
-        this.postsRepo.create(post)
+        return await this.postsRepo.create(post)
     }
 
     async findById(id: string){
