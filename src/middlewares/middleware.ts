@@ -2,6 +2,14 @@ import {NextFunction, Request, Response} from 'express'
 import { validationResult, body, CustomValidator } from 'express-validator'
 import { BlogsRepo } from '../repositories/blogsRepo';
 
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if (req.headers?.authorization?.split(' ')[1] === new Buffer('admin:qwerty').toString('base64') && req.headers?.authorization?.split(' ')[0] === 'Basic'){
+        next()
+    } else {
+        res.sendStatus(401)
+    }
+}
+
 const isValidUrl: CustomValidator = value => {
     if(!/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(value)){
         throw new Error('Invalid URL')
@@ -21,7 +29,7 @@ const isBlogIdValid: CustomValidator = async value => {
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     if(!errors.isEmpty()) {
-        res.status(400).send({errorMessages: errors.array({onlyFirstError: true}).map(e => {
+        res.status(400).send({errorsMessages: errors.array({onlyFirstError: true}).map(e => {
             return {message: e.msg, field: e.param}
         })})
     } else {

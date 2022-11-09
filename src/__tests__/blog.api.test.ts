@@ -68,7 +68,7 @@ describe('/blogs', () => {
 
     it('should return errors if values of blogs incorrect', async () => {
         await request(app).post('/blogs').send({}).expect(400, 
-            {errorMessages: [
+            {errorsMessages: [
                 { message: 'Invalid URL', field: 'youtubeUrl' },
                 { message: 'field must be from 1 to 15 chars', field: 'name' },
             ]})
@@ -242,7 +242,7 @@ describe('/blogs', () => {
         await request(app)
             .put(`/blogs/${resGet.body[0].id}`)
             .send({})
-            .expect(400, {errorMessages: [
+            .expect(400, {errorsMessages: [
                 { message: 'field must be from 1 to 15 chars', field: 'name' },
                 { message: 'Invalid URL', field: 'youtubeUrl' },
             ]})
@@ -255,7 +255,7 @@ describe('/blogs', () => {
         await request(app)
             .put(`/posts/${resGet.body[0].id}`)
             .send({})
-            .expect(400, {errorMessages: [
+            .expect(400, {errorsMessages: [
                 { message: 'field must be from 1 to 100 chars', field: 'shortDescription' },
                 { message: 'field must be from 1 to 30 chars', field: 'title' },
                 { message: 'field must be from 1 to 1000 chars', field: 'content' },
