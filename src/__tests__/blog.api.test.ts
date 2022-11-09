@@ -2,6 +2,9 @@ import request from 'supertest'
 import { app } from '../index'
 import { runDb } from '../repositories/db'
 
+//регулярка для даты с time-zone
+//StringMatching /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
+
 const port = 4444
 const startServer = async () => {
     await runDb()
