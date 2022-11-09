@@ -40,18 +40,20 @@ export class BlogsRepo {
         }
     }
 
-    async createPostByBlogId(id: string, body: {title: string, shortDescription: string, content: string}){
+    async createPostByBlogId(id: string, post: PostType){
         const blog = await blogCollection.findOne({_id: new ObjectId(id)})
         if(blog){
-            const post: PostType = {
-                title: body.title,
-                shortDescription: body.shortDescription,
-                content: body.content,
-                blogId: blog._id.toString(),
-                blogName: blog.name,
-                createdAt: new Date().toISOString()
+            await postCollection.insertOne(post)
+            return {
+                //@ts-ignore
+                id: post._id,
+                createdAt: post.createdAt,
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: post.blogId,
+                blogName: post.blogName,
             }
-            return await postCollection.insertOne(post)
         } else {
             return false
         }

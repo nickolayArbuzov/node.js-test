@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { BlogsRepo } from "../repositories/blogsRepo";
-import { BlogType } from "../types";
+import { BlogType, PostType } from "../types";
 
 @injectable()
 export class BlogsService {
@@ -21,7 +21,15 @@ export class BlogsService {
     }
 
     async createPostByBlogId(id: string, body: {title: string, shortDescription: string, content: string}){
-        return await this.blogsRepo.createPostByBlogId(id, body)
+        const post: PostType = {
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: id,
+            blogName: id,
+            createdAt: new Date().toISOString()
+        }
+        return await this.blogsRepo.createPostByBlogId(id, post)
     }
 
     async findPostByBlogId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
