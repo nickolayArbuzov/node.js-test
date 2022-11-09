@@ -27,7 +27,6 @@ export class PostsController {
     }
 
     async update(req: Request, res: Response){
-        console.log('req', req.body)
         const result = await this.postsService.update(req.params.id, req.body)
         if(result) {
             res.sendStatus(204)
