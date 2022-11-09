@@ -8,7 +8,7 @@ export class PostsController {
     }
 
     async find(req: Request, res: Response){
-        const result = await this.postsService.find()
+        const result = await this.postsService.find(+req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
         res.send(result)
     }
 

@@ -18,8 +18,23 @@ describe('/blogs', () => {
 
     const server = startServer()
 
-    let blogId = ''
+    let blogId = '636c166b30cc7431cea999c8'
     const incorrectBlogId = '036b26ccc6049bc21dec991e'
+
+    const queryBlog = {
+        pageNumber: 1,
+        pageSize: 10,
+        sortBy: 'createdAt',
+        sortDirection: 'desc',
+        searchNameTerm: null,
+    }
+
+    const queryPost = {
+        pageNumber: 1,
+        pageSize: 10,
+        sortBy: 'createdAt',
+        sortDirection: 'desc',
+    }
 
     let inputModelBlog1 = {
         name: 'name-1',
@@ -43,6 +58,16 @@ describe('/blogs', () => {
         title: "title-2",
         shortDescription: "shortDescription-2",
         content: "content-2",
+    }
+    let inputModelPost3 = {
+        title: "title-3",
+        shortDescription: "shortDescription-3",
+        content: "content-3",
+    }
+    let inputModelPost4 = {
+        title: "title-4",
+        shortDescription: "shortDescription-4",
+        content: "content-4",
     }
     let updateModelPost = {
         title: "title-10",
@@ -93,12 +118,12 @@ describe('/blogs', () => {
                 shortDescription: inputModelPost1.shortDescription,
                 content: inputModelPost1.content,
                 blogId: blogId,
-                blogName: blogId,
+                blogName: expect.any(String),
             },
         )
     })
 
-    it('should return all blogs', async () => {
+    it('should return all blogs with default sort', async () => {
         await request(app)
             .post('/blogs')
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
@@ -108,23 +133,30 @@ describe('/blogs', () => {
             .get('/blogs')
             .expect(200)
 
-        expect(res.body).toStrictEqual([
-                {
-                    createdAt: expect.any(String),
-                    id: expect.any(String),
-                    name: inputModelBlog1.name,
-                    youtubeUrl: inputModelBlog1.youtubeUrl,
-                }, 
-                {
-                    createdAt: expect.any(String),
-                    id: expect.any(String),
-                    name: inputModelBlog2.name,
-                    youtubeUrl: inputModelBlog2.youtubeUrl,
-                },
-            ])
+        expect(res.body).toStrictEqual(
+            {
+                pagesCount: Math.ceil(2/10),
+                page: 1,
+                pageSize: 10,
+                totalCount: 2,
+                items: [
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        name: inputModelBlog2.name,
+                        youtubeUrl: inputModelBlog2.youtubeUrl,
+                    }, 
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        name: inputModelBlog1.name,
+                        youtubeUrl: inputModelBlog1.youtubeUrl,
+                    },
+                ]
+            })
     })
 
-    it('should return all posts', async () => {
+    it('should return all posts with default sort', async () => {
         await request(app) 
             .post('/posts')
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
@@ -134,26 +166,139 @@ describe('/blogs', () => {
             .get('/posts')
             .expect(200)
 
-        expect(res.body).toStrictEqual([
-                {
-                    createdAt: expect.any(String),
-                    id: expect.any(String),
-                    title: inputModelPost1.title,
-                    shortDescription: inputModelPost1.shortDescription,
-                    content: inputModelPost1.content,
-                    blogId: blogId,
-                    blogName: blogId,
-                }, 
-                {
-                    createdAt: expect.any(String),
-                    id: expect.any(String),
-                    title: inputModelPost2.title,
-                    shortDescription: inputModelPost2.shortDescription,
-                    content: inputModelPost2.content,
-                    blogId: blogId,
-                    blogName: blogId,
-                },
-            ])
+        expect(res.body).toStrictEqual(
+            {
+                pagesCount: Math.ceil(2/10),
+                page: 1,
+                pageSize: 10,
+                totalCount: 2,
+                items:[
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost2.title,
+                        shortDescription: inputModelPost2.shortDescription,
+                        content: inputModelPost2.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    }, 
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost1.title,
+                        shortDescription: inputModelPost1.shortDescription,
+                        content: inputModelPost1.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    },
+                ]
+            }
+        )
+    })
+
+    it('should create post with default sort by blogId', async () => {
+        const test = await request(app) 
+            .post(`/blogs/${blogId}/posts`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send({...inputModelPost3}).expect(201)
+        const res = await request(app)
+            .get('/posts')
+            .expect(200)
+
+        expect(res.body).toStrictEqual(
+            {
+                pagesCount: Math.ceil(3/10),
+                page: 1,
+                pageSize: 10,
+                totalCount: 3,
+                items:[
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost3.title,
+                        shortDescription: inputModelPost3.shortDescription,
+                        content: inputModelPost3.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    },
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost2.title,
+                        shortDescription: inputModelPost2.shortDescription,
+                        content: inputModelPost2.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    }, 
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost1.title,
+                        shortDescription: inputModelPost1.shortDescription,
+                        content: inputModelPost1.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    },
+                ]
+            }
+        )
+    })
+
+    it('should return all posts by blogId', async () => {
+        const test = await request(app) 
+            .post(`/blogs/${blogId}/posts`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send({...inputModelPost4, blogId: blogId}).expect(201)
+        const res = await request(app)
+            .get('/posts')
+            .expect(200)
+
+        expect(res.body).toStrictEqual(
+            {
+                pagesCount: Math.ceil(4/10),
+                page: 1,
+                pageSize: 10,
+                totalCount: 4,
+                items:[
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost4.title,
+                        shortDescription: inputModelPost4.shortDescription,
+                        content: inputModelPost4.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    },
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost3.title,
+                        shortDescription: inputModelPost3.shortDescription,
+                        content: inputModelPost3.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    },
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost2.title,
+                        shortDescription: inputModelPost2.shortDescription,
+                        content: inputModelPost2.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    }, 
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost1.title,
+                        shortDescription: inputModelPost1.shortDescription,
+                        content: inputModelPost1.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    },
+                ]
+            }
+        )
     })
 
     it('should return one blog', async () => {
@@ -161,15 +306,15 @@ describe('/blogs', () => {
             .get('/blogs')
 
         const res = await request(app)
-            .get(`/blogs/${resGet.body[1].id}`)
+            .get(`/blogs/${resGet.body.items[1].id}`)
             .expect(200)
 
         expect(res.body).toStrictEqual(
             {
                 createdAt: expect.any(String),
-                id: resGet.body[1].id,
-                name: inputModelBlog2.name,
-                youtubeUrl: inputModelBlog2.youtubeUrl,
+                id: resGet.body.items[1].id,
+                name: inputModelBlog1.name,
+                youtubeUrl: inputModelBlog1.youtubeUrl,
             })
     })
 
@@ -178,18 +323,18 @@ describe('/blogs', () => {
             .get('/posts')
 
         const res = await request(app)
-            .get(`/posts/${resGet.body[1].id}`)
+            .get(`/posts/${resGet.body.items[1].id}`)
             .expect(200)
 
         expect(res.body).toStrictEqual(
             {
                 createdAt: expect.any(String),
                 id: expect.any(String),
-                title: inputModelPost2.title,
-                shortDescription: inputModelPost2.shortDescription,
-                content: inputModelPost2.content,
+                title: inputModelPost3.title,
+                shortDescription: inputModelPost3.shortDescription,
+                content: inputModelPost3.content,
                 blogId: blogId,
-                blogName: blogId,
+                blogName: expect.any(String),
             })
     })
 
@@ -210,12 +355,12 @@ describe('/blogs', () => {
             .get('/blogs')
 
         await request(app)
-            .put(`/blogs/${resGet.body[0].id}`)
+            .put(`/blogs/${resGet.body.items[0].id}`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(updateModelBlog).expect(204)
 
         const res = await request(app)
-            .get(`/blogs/${resGet.body[0].id}`)
+            .get(`/blogs/${resGet.body.items[0].id}`)
             .expect(200)
         
         expect(res.body).toStrictEqual(
@@ -233,23 +378,23 @@ describe('/blogs', () => {
             .get('/posts')
 
         await request(app)
-            .put(`/posts/${resGet.body[0].id}`)
+            .put(`/posts/${resGet.body.items[0].id}`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({...updateModelPost, blogId: blogId, blogName: blogId}).expect(204)
 
         const res = await request(app)
-            .get(`/posts/${resGet.body[0].id}`)
+            .get(`/posts/${resGet.body.items[0].id}`)
             .expect(200)
         
         expect(res.body).toStrictEqual(
             {
                 createdAt: expect.any(String),
-                id: resGet.body[0].id,
+                id: resGet.body.items[0].id,
                 title: updateModelPost.title,
                 shortDescription: updateModelPost.shortDescription,
                 content: updateModelPost.content,
                 blogId: blogId,
-                blogName: blogId,
+                blogName: expect.any(String),
             }
         )
     })
@@ -259,7 +404,7 @@ describe('/blogs', () => {
             .get('/blogs')
 
         await request(app)
-            .put(`/blogs/${resGet.body[0].id}`)
+            .put(`/blogs/${resGet.body.items[0].id}`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({})
             .expect(400, {errorsMessages: [
@@ -273,7 +418,7 @@ describe('/blogs', () => {
             .get('/posts')
 
         await request(app)
-            .put(`/posts/${resGet.body[0].id}`)
+            .put(`/posts/${resGet.body.items[0].id}`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({})
             .expect(400, {errorsMessages: [
@@ -305,37 +450,37 @@ describe('/blogs', () => {
             .get('/blogs')
 
         await request(app)
-            .delete(`/blogs/${resGet.body[0].id}`)
+            .delete(`/blogs/${resGet.body.items[0].id}`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(204)
 
         await request(app)
-            .get(`/blogs/${resGet.body[0].id}`)
+            .get(`/blogs/${resGet.body.items[0].id}`)
             .expect(404)
 
         const res = await request(app)
             .get(`/blogs`)
         
-        expect(res.body.length).toBe(1)
+        expect(res.body.items.length).toBe(1)
     })
 
-    it('should return status 204 if blog deleted', async () => {
+    it('should return status 204 if post deleted', async () => {
         const resGet = await request(app)
             .get('/posts')
 
         await request(app)
-            .delete(`/posts/${resGet.body[0].id}`)
+            .delete(`/posts/${resGet.body.items[0].id}`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(204)
 
         await request(app)
-            .get(`/posts/${resGet.body[0].id}`)
+            .get(`/posts/${resGet.body.items[0].id}`)
             .expect(404)
 
         const res = await request(app)
             .get(`/posts`)
         
-        expect(res.body.length).toBe(1)
+        expect(res.body.items.length).toBe(3)
     })
 
     it('should return status 404 if blog for delete not found', async () => {
@@ -347,7 +492,7 @@ describe('/blogs', () => {
         const res = await request(app)
             .get(`/blogs`)
         
-        expect(res.body.length).toBe(1)
+        expect(res.body.items.length).toBe(1)
     })
 
     it('should return status 404 if post for delete not found', async () => {
@@ -359,7 +504,7 @@ describe('/blogs', () => {
         const res = await request(app)
             .get(`/posts`)
         
-        expect(res.body.length).toBe(1)
+        expect(res.body.items.length).toBe(3)
     })
 
     server.then((server) => server.close())

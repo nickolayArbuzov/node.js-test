@@ -1,19 +1,19 @@
 import { injectable, inject } from "inversify";
 import { PostsRepo } from "../repositories/postsRepo";
-import { postType } from "../types";
+import { PostType } from "../types";
 
 @injectable()
 export class PostsService {
     constructor(@inject(PostsRepo) protected postsRepo: PostsRepo) {
     }
 
-    async find(){
-        return await this.postsRepo.find()
+    async find(pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
+        return await this.postsRepo.find(pageNumber, pageSize, sortBy, sortDirection)
     }
 
     async create(title: string, shortDescription: string, content: string, blogId: string, blogName: string){
 
-        const post: postType = {
+        const post: PostType = {
             title: title,
             shortDescription: shortDescription,
             content: content,
@@ -28,7 +28,7 @@ export class PostsService {
         return await this.postsRepo.findById(id)
     }
 
-    async update(id: string, post: postType){
+    async update(id: string, post: PostType){
         return await this.postsRepo.update(id, post)
     }
 

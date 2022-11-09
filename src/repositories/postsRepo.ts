@@ -1,20 +1,35 @@
 import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
-import { postType } from "../types";
+import { PostType } from "../types";
 import { postCollection } from "./db";
 
 @injectable()
 export class PostsRepo {
-    async find(){
-        const posts = await postCollection.find().toArray()
-        return posts.map(p => {
+    async find(pageNumber: number, pageSize: number, sortBy: string, sortDirection: any){
+        const posts = await postCollection.find({})
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
+        .sort({[sortBy] : sortDirection})
+        .toArray()
+
+        const totalCount = await postCollection.count({});
+
+        const items = posts.map(p => {
             //@ts-ignore
             delete Object.assign(p, {["id"]: p["_id"] })["_id"];
             return p
         })
+
+        return {    
+            pagesCount: Math.ceil(totalCount/pageSize),
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: totalCount,
+            items: items,
+        }
     }
 
-    async create(post: postType){
+    async create(post: PostType){
         await postCollection.insertOne(post)
         return {
             //@ts-ignore
@@ -44,7 +59,7 @@ export class PostsRepo {
         return false
     }
 
-    async update(id: string, post: postType){
+    async update(id: string, post: PostType){
         const result = await postCollection.updateOne({_id: new ObjectId(id)}, {$set: post})
         return result.matchedCount === 1
     }

@@ -8,7 +8,7 @@ export class BlogsController {
     }
 
     async find(req: Request, res: Response){
-        const result = await this.blogsService.find()
+        const result = await this.blogsService.find(req.query.searchNameTerm!, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
         res.send(result)
     }
 
@@ -17,6 +17,24 @@ export class BlogsController {
         res.status(201).send(blog)
     }
 
+    async createPostByBlogId(req: Request, res: Response){
+        const result = await this.blogsService.createPostByBlogId(req.params.id, req.body)
+        if (result) {
+            res.status(201).send(result)
+        } else {
+            res.sendStatus(404)
+        }
+    }
+
+    async findPostByBlogId(req: Request, res: Response){
+        const result = await this.blogsService.findPostByBlogId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
+        if (result) {
+            res.status(200).send(result)
+        } else {
+            res.sendStatus(404)
+        }
+    }
+ 
     async findById(req: Request, res: Response){
         const blog = await this.blogsService.findById(req.params.id)
         if(blog) {

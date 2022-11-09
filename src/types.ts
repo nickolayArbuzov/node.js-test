@@ -1,4 +1,4 @@
-export interface postType {
+export type PostType = {
         id?: string | null,
         title: string | null,
         shortDescription: string | null,
@@ -8,7 +8,7 @@ export interface postType {
         createdAt: string,
 }
 
-export interface blogType{
+export type BlogType = {
         id?: string,
         name: string,
         youtubeUrl: string,
