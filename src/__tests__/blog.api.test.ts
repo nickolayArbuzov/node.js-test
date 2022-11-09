@@ -54,6 +54,7 @@ describe('/blogs', () => {
     it('should return added blog if values correct', async () => {
         const res = await request(app)
             .post('/blogs')
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(inputModelBlog1).expect(201)
 
         expect(res.body).toStrictEqual(
@@ -67,7 +68,7 @@ describe('/blogs', () => {
     })
 
     it('should return errors if values of blogs incorrect', async () => {
-        await request(app).post('/blogs').send({}).expect(400, 
+        await request(app).post('/blogs').set('Authorization', 'Basic YWRtaW46cXdlcnR5').send({}).expect(400, 
             {errorsMessages: [
                 { message: 'Invalid URL', field: 'youtubeUrl' },
                 { message: 'field must be from 1 to 15 chars', field: 'name' },
@@ -77,6 +78,7 @@ describe('/blogs', () => {
     it('should return added post if values correct', async () => {
         const res = await request(app)
             .post('/posts')
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({...inputModelPost1, blogId: blogId}).expect(201)
 
         expect(res.body).toStrictEqual(
@@ -94,6 +96,7 @@ describe('/blogs', () => {
     it('should return all blogs', async () => {
         await request(app)
             .post('/blogs')
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(inputModelBlog2).expect(201)
 
         const res = await request(app)
@@ -117,6 +120,7 @@ describe('/blogs', () => {
     it('should return all posts', async () => {
         await request(app) 
             .post('/posts')
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({...inputModelPost2, blogId: blogId}).expect(201)
 
         const res = await request(app)
@@ -196,6 +200,7 @@ describe('/blogs', () => {
 
         await request(app)
             .put(`/blogs/${resGet.body[0].id}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(updateModelBlog).expect(204)
 
         const res = await request(app)
@@ -217,6 +222,7 @@ describe('/blogs', () => {
 
         await request(app)
             .put(`/posts/${resGet.body[0].id}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({...updateModelPost, blogId: blogId, blogName: blogId}).expect(204)
 
         const res = await request(app)
@@ -241,6 +247,7 @@ describe('/blogs', () => {
 
         await request(app)
             .put(`/blogs/${resGet.body[0].id}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({})
             .expect(400, {errorsMessages: [
                 { message: 'field must be from 1 to 15 chars', field: 'name' },
@@ -254,6 +261,7 @@ describe('/blogs', () => {
 
         await request(app)
             .put(`/posts/${resGet.body[0].id}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({})
             .expect(400, {errorsMessages: [
                 { message: 'field must be from 1 to 100 chars', field: 'shortDescription' },
@@ -266,6 +274,7 @@ describe('/blogs', () => {
     it('should return 404 if blog for put not found', async () => {
         await request(app)
             .put(`/blogs/${incorrectBlogId}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(updateModelBlog)
             .expect(404)
     })
@@ -273,6 +282,7 @@ describe('/blogs', () => {
     it('should return 404 if blog for put not found', async () => {
         await request(app)
             .put(`/posts/${incorrectBlogId}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({...updateModelPost, blogId: blogId, blogName: blogId})
             .expect(404)
     })
@@ -283,6 +293,7 @@ describe('/blogs', () => {
 
         await request(app)
             .delete(`/blogs/${resGet.body[0].id}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(204)
 
         await request(app)
@@ -301,6 +312,7 @@ describe('/blogs', () => {
 
         await request(app)
             .delete(`/posts/${resGet.body[0].id}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(204)
 
         await request(app)
@@ -316,6 +328,7 @@ describe('/blogs', () => {
     it('should return status 404 if blog for delete not found', async () => {
         await request(app)
             .delete(`/blogs/${incorrectBlogId}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(404)
 
         const res = await request(app)
@@ -327,6 +340,7 @@ describe('/blogs', () => {
     it('should return status 404 if post for delete not found', async () => {
         await request(app)
             .delete(`/posts/${incorrectBlogId}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(404)
 
         const res = await request(app)
