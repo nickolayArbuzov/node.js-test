@@ -1,28 +1,16 @@
 import {Router} from "express";
 import { container } from "../composition-root";
-import { BlogsController } from "../controllers/blogsController";
+import { AuthController } from "../controllers/authController";
 import { 
-    authMiddleware, 
-    blogNameValidation, 
-    blogUrlValidation, 
-    inputValidationMiddleware, 
     logger, 
-    postBlogIdValidation, 
-    postContentValidation, 
-    postShortDescrValidation, 
-    postTitleValidation 
 } from "../middlewares/middleware";
-import { pageNumberSanitizer, pageSizeSanitizer, searchNameTermSanitizer, sortBySanitizer, sortDirectionSanitizer } from "../middlewares/sanitazers";
 
-const blogsController = container.resolve(BlogsController)
+const authController = container.resolve(AuthController)
 
 export const authRouter = Router({})
 
 authRouter.post('/login', 
     logger,
-    blogUrlValidation, 
-    blogNameValidation, 
-    inputValidationMiddleware, 
-        blogsController.create.bind(blogsController))
+        authController.create.bind(authController))
 
 

@@ -8,6 +8,22 @@ const SearchNameTerm: CustomSanitizer = value => {
 }
 export const searchNameTermSanitizer = query('searchNameTerm').customSanitizer(SearchNameTerm)
 
+const SearchLoginTerm: CustomSanitizer = value => {
+    if(!value){
+        return ""
+    }
+    return value
+}
+export const searchLoginTermSanitizer = query('searchLoginTerm').customSanitizer(SearchLoginTerm)
+
+const SearchEmailTerm: CustomSanitizer = value => {
+    if(!value){
+        return ""
+    }
+    return value
+}
+export const searchEmailTermSanitizer = query('searchEmailTerm').customSanitizer(SearchEmailTerm)
+
 const PageNumber: CustomSanitizer = value => {
     if(!value || typeof value === "undefined"){
         return 1
@@ -42,6 +58,3 @@ const SortDirection: CustomSanitizer = value => {
     return 1
 }
 export const sortDirectionSanitizer = query('sortDirection').customSanitizer(SortDirection)
-
-
-

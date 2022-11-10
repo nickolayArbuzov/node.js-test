@@ -1,42 +1,48 @@
 import {Router} from "express";
 import { container } from "../composition-root";
-import { BlogsController } from "../controllers/blogsController";
+import { UsersController } from "../controllers/usersController";
 import { 
     authMiddleware, 
-    blogNameValidation, 
-    blogUrlValidation, 
     inputValidationMiddleware, 
-    logger, 
-    postBlogIdValidation, 
-    postContentValidation, 
-    postShortDescrValidation, 
-    postTitleValidation 
+    logger,
+    userEmailValidation,
+    userLoginValidation,
+    userPasswordValidation, 
 } from "../middlewares/middleware";
-import { pageNumberSanitizer, pageSizeSanitizer, searchNameTermSanitizer, sortBySanitizer, sortDirectionSanitizer } from "../middlewares/sanitazers";
+import { 
+    pageNumberSanitizer, 
+    pageSizeSanitizer, 
+    searchEmailTermSanitizer, 
+    searchLoginTermSanitizer, 
+    sortBySanitizer, 
+    sortDirectionSanitizer 
+} from "../middlewares/sanitazers";
 
-const blogsController = container.resolve(BlogsController)
+const usersController = container.resolve(UsersController)
 
 export const usersRouter = Router({})
 
 usersRouter.get('/', 
     logger,
-    authMiddleware, 
-    searchNameTermSanitizer, 
+
+    searchLoginTermSanitizer, 
+    searchEmailTermSanitizer,
     pageNumberSanitizer, 
     pageSizeSanitizer, 
     sortBySanitizer, 
     sortDirectionSanitizer, 
-        blogsController.find.bind(blogsController))
+        usersController.find.bind(usersController))
 
 usersRouter.post('/', 
     logger,
     authMiddleware, 
-    blogUrlValidation, 
-    blogNameValidation, 
+    userLoginValidation,
+    userPasswordValidation,
+    userEmailValidation,
     inputValidationMiddleware, 
-        blogsController.create.bind(blogsController))
+        usersController.create.bind(usersController))
 
 usersRouter.delete('/:id', 
     logger,
     authMiddleware, 
-        blogsController.delete.bind(blogsController))
+        usersController.delete.bind(usersController))
