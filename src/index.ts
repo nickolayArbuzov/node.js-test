@@ -5,8 +5,8 @@ import {blogsRouter} from "./routes/blogsRouter";
 import {postsRouter} from "./routes/postsRouter";
 import { usersRouter } from './routes/usersRouter';
 import { authRouter } from './routes/authRouter';
-
-import { blogCollection, postCollection, runDb, userCollection } from './repositories/db';
+import { commentsRouter } from './routes/commentsRouter';
+import { runDb, blogCollection, postCollection, userCollection } from './repositories/db';
 
 dotenv.config()
 
@@ -18,6 +18,7 @@ app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter) 
 app.use('/users', usersRouter) 
 app.use('/auth', authRouter) 
+app.use('/comments', commentsRouter) 
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
     await postCollection.deleteMany({})
