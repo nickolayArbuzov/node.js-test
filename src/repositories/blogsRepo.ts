@@ -68,7 +68,7 @@ export class BlogsRepo {
             .sort({[sortBy] : sortDirection})
             .toArray()
 
-            const totalCount = await postCollection.count({});
+            const totalCount = await postCollection.countDocuments({});
 
             const items = posts.map(p => {
                 //@ts-ignore
