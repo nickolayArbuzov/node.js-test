@@ -11,7 +11,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 }
 
 export const logger = (req: Request, res: Response, next: NextFunction) => {
-    console.log('req', req)
     next()
 }
 

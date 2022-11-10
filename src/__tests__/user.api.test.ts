@@ -1,8 +1,19 @@
 import request from 'supertest'
 import { app } from '../index'
+import { runDb } from '../repositories/db'
 
-/*jest.setTimeout(60000)
+const port = 4444
+const startServer = async () => {
+    await runDb()
+    return app.listen(port, () => {
+        console.log(`App listening on port ${port}`)
+    })
+}
+
+jest.setTimeout(60000)
 describe('/users', () => {
+
+    const server = startServer()
 
     let inputModelUser1 = {
         id: '1',
@@ -113,4 +124,6 @@ describe('/users', () => {
         expect(res.body.length).toBe(1)
     })
 
-})*/
+    server.then((server) => server.close())
+
+})

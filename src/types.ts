@@ -14,3 +14,12 @@ export type BlogType = {
         youtubeUrl: string,
         createdAt: string,
 }
+
+export type UserType = {
+        id?: string,
+        login: string,
+        passwordHash: string,
+        passwordSalt: string,
+        email: string,
+        createdAt: string,
+}
