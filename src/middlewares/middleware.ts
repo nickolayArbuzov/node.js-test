@@ -10,6 +10,11 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
 }
 
+export const logger = (req: Request, res: Response, next: NextFunction) => {
+    console.log('req', req)
+    next()
+}
+
 const isValidUrl: CustomValidator = value => {
     if(!/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(value)){
         throw new Error('Invalid URL')

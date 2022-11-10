@@ -12,7 +12,7 @@ export class BlogsRepo {
         .sort({[sortBy] : sortDirection})
         .toArray()
 
-        const totalCount = await blogCollection.count({"name": {$regex: searchNameTerm, $options : 'i'}});
+        const totalCount = await blogCollection.countDocuments({"name": {$regex: searchNameTerm, $options : 'i'}});
 
         const items = blogs.map(b => {
             //@ts-ignore

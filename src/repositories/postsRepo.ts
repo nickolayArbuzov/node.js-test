@@ -12,7 +12,7 @@ export class PostsRepo {
         .sort({[sortBy] : sortDirection})
         .toArray()
 
-        const totalCount = await postCollection.count({});
+        const totalCount = await postCollection.countDocuments({});
 
         const items = posts.map(p => {
             //@ts-ignore

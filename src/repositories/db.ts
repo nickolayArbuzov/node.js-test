@@ -7,6 +7,7 @@ const mongoURI = process.env.MONGO_URL || "";
 export const client = new MongoClient(mongoURI);
 export const blogCollection = client.db("test").collection<BlogType>("blogs");
 export const postCollection = client.db("test").collection<PostType>("posts");
+export const logCollection = client.db("test").collection<PostType>("logs");
 
 export async function runDb(){
     try {
