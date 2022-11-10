@@ -62,7 +62,7 @@ export class BlogsRepo {
     async findPostByBlogId(id: string, pageNumber: number, pageSize: number, sortBy: string, sortDirection: any){
         const blog = await blogCollection.findOne({_id: new ObjectId(id)})
         if(blog){
-            const posts = await postCollection.find({})
+            const posts = await postCollection.find({blogId: id})
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .sort({[sortBy] : sortDirection})
