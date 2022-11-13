@@ -61,6 +61,46 @@ describe('/users', () => {
         await request(app).delete('/testing/all-data').expect(204)
     })
 
+    /*it('should create and return one post', async () => {
+        await request(app) 
+            .post('/posts')
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send({...inputModelPost2, blogId: blogId}).expect(201)
+
+        const res = await request(app)
+            .get('/posts')
+            .expect(200)
+
+        expect(res.body).toStrictEqual(
+            {
+                pagesCount: Math.ceil(2/10),
+                page: 1,
+                pageSize: 10,
+                totalCount: 2,
+                items:[
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost2.title,
+                        shortDescription: inputModelPost2.shortDescription,
+                        content: inputModelPost2.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    }, 
+                    {
+                        createdAt: expect.any(String),
+                        id: expect.any(String),
+                        title: inputModelPost1.title,
+                        shortDescription: inputModelPost1.shortDescription,
+                        content: inputModelPost1.content,
+                        blogId: blogId,
+                        blogName: expect.any(String),
+                    },
+                ]
+            }
+        )
+    })*/
+
     it('should return added user if values correct', async () => {
         await request(app)
             .post('/users')

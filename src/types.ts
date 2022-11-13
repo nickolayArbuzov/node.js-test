@@ -9,7 +9,7 @@ export type PostType = {
 }
 
 export type BlogType = {
-        id: string,
+        id?: string,
         name: string,
         youtubeUrl: string,
         createdAt: string,
