@@ -29,11 +29,11 @@ app.get('/', (req: Request, res: Response) => {
     res.send({message: 'Inversify+'})
 })
 
-/*const startServer = async () => {
+const startServer = async () => {
     await runDb()
     return app.listen(port, () => {
         console.log(`App listening on port ${port}`)
     })
 }
 
-startServer()*/
+startServer()
