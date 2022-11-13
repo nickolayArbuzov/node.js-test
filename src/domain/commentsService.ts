@@ -1,7 +1,6 @@
 import { injectable, inject } from "inversify";
 import bcrypt from 'bcrypt';
-import { UsersRepo } from "../repositories/usersRepo";
-import { UserType } from "../types";
+import { CommentType } from "../types";
 import { CommentsRepo } from "../repositories/commentsRepo";
 
 @injectable()
@@ -13,20 +12,13 @@ export class CommentsService {
         return await this.commentsRepo.find(searchLoginTerm, searchEmailTerm, pageNumber, pageSize, sortBy, sortDirection)
     }
 
-    async create(login: string, password: string, email: string){
+    async update(login: string, password: string, email: string){
 
-        const passwordSalt = await bcrypt.genSalt(10)
-        const passwordHash = await bcrypt.hash(password, passwordSalt)
-
-        const user: UserType = {
-            login: login,
-            passwordHash: passwordHash,
-            passwordSalt: passwordSalt,
-            email: email,
-            createdAt: new Date().toISOString(),
+        /*const comment: CommentType = {
+            
         }
 
-        return this.commentsRepo.create(user)
+        return this.commentsRepo.create(comment)*/
     }
 
     async delete(id: string){

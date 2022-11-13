@@ -1,20 +1,38 @@
 import {Router} from "express";
 import { container } from "../composition-root";
 import { PostsController } from "../controllers/postsController";
-import { authMiddleware, inputValidationMiddleware, logger, postBlogIdValidation, postContentValidation, postShortDescrValidation, postTitleValidation } from "../middlewares/middleware";
-import { pageNumberSanitizer, pageSizeSanitizer, searchNameTermSanitizer, sortBySanitizer, sortDirectionSanitizer } from "../middlewares/sanitazers";
+import { 
+    commentContentValidation, 
+    inputValidationMiddleware, 
+    logger, 
+    postBlogIdValidation, 
+    postContentValidation, 
+    postShortDescrValidation, 
+    postTitleValidation 
+} from "../middlewares/middleware";
+import {
+    authMiddleware,
+    jwtMiddleware
+} from '../middlewares/authGuard';
+import { pageNumberSanitizer, pageSizeSanitizer, sortBySanitizer, sortDirectionSanitizer } from "../middlewares/sanitazers";
 
 const postsController = container.resolve(PostsController)
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', 
+postsRouter.get('/:id/comments', 
     logger, 
     pageNumberSanitizer, 
     pageSizeSanitizer, 
     sortBySanitizer, 
     sortDirectionSanitizer, 
-        postsController.find.bind(postsController))
+        postsController.findCommentbyPostId.bind(postsController))
+
+postsRouter.post('/:id/comments', 
+    logger, 
+    jwtMiddleware,
+    commentContentValidation,
+        postsController.createCommentbyPostId.bind(postsController))
 
 postsRouter.post('/', 
     logger, 

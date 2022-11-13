@@ -10,7 +10,7 @@ export class AuthController {
     async create(req: Request, res: Response){
         const auth = await this.authService.create(req.body.login, req.body.password)
         if(auth) {
-            res.sendStatus(204)
+            res.send(auth)
         } else {
             res.sendStatus(401)
         }

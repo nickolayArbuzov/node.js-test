@@ -2,13 +2,15 @@ import {Router} from "express";
 import { container } from "../composition-root";
 import { UsersController } from "../controllers/usersController";
 import { 
-    authMiddleware, 
     inputValidationMiddleware, 
     logger,
     userEmailValidation,
     userLoginValidation,
     userPasswordValidation, 
 } from "../middlewares/middleware";
+import {
+    authMiddleware
+} from '../middlewares/authGuard';
 import { 
     pageNumberSanitizer, 
     pageSizeSanitizer, 
@@ -24,7 +26,7 @@ export const usersRouter = Router({})
 
 usersRouter.get('/', 
     logger,
-
+    authMiddleware, 
     searchLoginTermSanitizer, 
     searchEmailTermSanitizer,
     pageNumberSanitizer, 

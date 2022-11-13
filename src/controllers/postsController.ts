@@ -7,6 +7,16 @@ export class PostsController {
     constructor(@inject(PostsService) protected postsService: PostsService) {
     }
 
+    async findCommentbyPostId(req: Request, res: Response){
+        const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
+        res.send(result)
+    }
+
+    async createCommentbyPostId(req: Request, res: Response){
+        const post = await this.postsService.createCommentbyPostId(req.params.id, req.body.content)
+        res.status(201).send(post)
+    }
+
     async find(req: Request, res: Response){
         const result = await this.postsService.find(+req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
         res.send(result)

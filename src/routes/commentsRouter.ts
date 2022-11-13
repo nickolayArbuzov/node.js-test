@@ -2,47 +2,30 @@ import {Router} from "express";
 import { container } from "../composition-root";
 import { CommentsController } from "../controllers/commentsController";
 import { 
-    authMiddleware, 
     inputValidationMiddleware, 
     logger,
-    userEmailValidation,
-    userLoginValidation,
-    userPasswordValidation, 
+    commentContentValidation,
 } from "../middlewares/middleware";
-import { 
-    pageNumberSanitizer, 
-    pageSizeSanitizer, 
-    searchEmailTermSanitizer, 
-    searchLoginTermSanitizer, 
-    sortBySanitizer, 
-    sortDirectionSanitizer 
-} from "../middlewares/sanitazers";
+import {
+    jwtMiddleware
+} from '../middlewares/authGuard';
 
 const commentsController = container.resolve(CommentsController)
 
 export const commentsRouter = Router({})
 
-commentsRouter.get('/', 
+commentsRouter.get('/:id', 
     logger,
-
-    searchLoginTermSanitizer, 
-    searchEmailTermSanitizer,
-    pageNumberSanitizer, 
-    pageSizeSanitizer, 
-    sortBySanitizer, 
-    sortDirectionSanitizer, 
         commentsController.find.bind(commentsController))
 
-commentsRouter.post('/', 
+commentsRouter.put('/:', 
     logger,
-    authMiddleware, 
-    userLoginValidation,
-    userPasswordValidation,
-    userEmailValidation,
+    jwtMiddleware,
+    commentContentValidation,
     inputValidationMiddleware, 
         commentsController.create.bind(commentsController))
 
 commentsRouter.delete('/:id', 
     logger,
-    authMiddleware, 
+    jwtMiddleware, 
         commentsController.delete.bind(commentsController))

@@ -48,6 +48,12 @@ describe('/users', () => {
         password: "password-5",
     }
 
+    let accessToken = ''
+    let incorrectToken = ''
+
+    let postId = ''
+    let incorrectPostId = ''
+
     let realUserId = ''
     let incorrectUserId = '000d727e3f7e0f76da66c064'
 
@@ -73,7 +79,7 @@ describe('/users', () => {
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(inputModelUser4).expect(201)
 
-        const res = await request(app).get(`/users`)
+        const res = await request(app).get(`/users`).set('Authorization', 'Basic YWRtaW46cXdlcnR5')
 
         realUserId = res.body.items[0].id
 
@@ -111,16 +117,50 @@ describe('/users', () => {
         })
     })
 
-    it('should return login by correct values', async () => {
-        await request(app).post('/auth/login').send(correctInputModelAuth).expect(204)
+    it('should return 401 if auth-header missing', async () => {
+        await request(app).get(`/users`).expect(401)
+    })
+
+    it('should return accesstoken with login by correct values', async () => {
+        const auth = await request(app).post('/auth/login').send(correctInputModelAuth).expect(200)
+        accessToken = auth.body.accessToken
+        expect(auth.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
+    })
+
+    it('should add comment with correct accesToken', async () => {
+        const auth = await request(app).post('/gfdg/comments').send(correctInputModelAuth).expect(200)
+        accessToken = auth.body.accessToken
+        expect(auth.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
+    })
+
+    it('should return 403 if try to add comment with not valid token', async () => {
+        const auth = await request(app).post('/gfdg/comments').send(correctInputModelAuth).expect(403)
+        accessToken = auth.body.accessToken
+        expect(auth.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
+    })
+
+    it('should return accesstoken with login by correct values', async () => {
+        const auth = await request(app).post('/auth/login').send(correctInputModelAuth).expect(200)
+        accessToken = auth.body.accessToken
+        expect(auth.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
     })
 
     it('should return 401 if pass not correct', async () => {
-        await request(app).post('/auth/login').send(incorrectPassInputModelAuth).expect(401)
+        const auth = await request(app).post('/auth/login').send(incorrectPassInputModelAuth).expect(401)
+        expect(auth.body).toStrictEqual({})
     })
 
     it('should return 401 if login not found', async () => {
-        await request(app).post('/auth/login').send(incorrectInputModelAuth).expect(401)
+        const auth = await request(app).post('/auth/login').send(incorrectInputModelAuth).expect(401)
+        expect(auth.body).toStrictEqual({})
     })
     
     it('should return errors if values incorrect', async () => {
@@ -139,7 +179,7 @@ describe('/users', () => {
             .expect(204)
 
         const res = await request(app)
-            .get(`/users`)
+            .get(`/users`).set('Authorization', 'Basic YWRtaW46cXdlcnR5')
         
         expect(res.body.items.length).toBe(3)
     })
@@ -151,7 +191,7 @@ describe('/users', () => {
             .expect(404)
 
         const res = await request(app)
-            .get(`/users`)
+            .get(`/users`).set('Authorization', 'Basic YWRtaW46cXdlcnR5')
         
         expect(res.body.items.length).toBe(3)
     })

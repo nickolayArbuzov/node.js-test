@@ -2,7 +2,6 @@ import {Router} from "express";
 import { container } from "../composition-root";
 import { BlogsController } from "../controllers/blogsController";
 import { 
-    authMiddleware, 
     blogNameValidation, 
     blogUrlValidation, 
     inputValidationMiddleware, 
@@ -12,6 +11,9 @@ import {
     postShortDescrValidation, 
     postTitleValidation 
 } from "../middlewares/middleware";
+import {
+    authMiddleware
+} from '../middlewares/authGuard';
 import { pageNumberSanitizer, pageSizeSanitizer, searchNameTermSanitizer, sortBySanitizer, sortDirectionSanitizer } from "../middlewares/sanitazers";
 
 const blogsController = container.resolve(BlogsController)

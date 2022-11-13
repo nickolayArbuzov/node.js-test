@@ -1,12 +1,12 @@
 import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
-import { UserType } from "../types";
-import { userCollection } from "./db";
+import { CommentType } from "../types";
+import { commentCollection } from "./db";
 
 @injectable()
 export class CommentsRepo {
     async find(searchLoginTerm: any, searchEmailTerm: any, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
-        const users = await userCollection.find(
+        const users = await commentCollection.find(
             {$or: [
                 {"login": {$regex: searchLoginTerm, $options: 'i'}}, 
                 {"email": {$regex: searchEmailTerm, $options: 'i'}}
@@ -17,7 +17,7 @@ export class CommentsRepo {
         .sort({[sortBy] : sortDirection})
         .toArray()
 
-        const totalCount = await userCollection.countDocuments(
+        const totalCount = await commentCollection.countDocuments(
             {$or: [
                 {"login": {$regex: searchLoginTerm, $options: 'i'}}, 
                 {"email": {$regex: searchEmailTerm, $options: 'i'}}
@@ -26,10 +26,7 @@ export class CommentsRepo {
 
         const items = users.map(u => {
             return {
-                id: u._id,
-                login: u.login,
-                email: u.email,
-                createdAt: u.createdAt,
+
             }
         })
 
@@ -42,19 +39,59 @@ export class CommentsRepo {
         }
     }
 
-    async create(user: UserType){
-        await userCollection.insertOne(user)
+    async update(comment: CommentType){
+        /*await commentCollection.updateOne()
         return {
             //@ts-ignore
             id: user._id,
             login: user.login,
             email: user.email,
             createdAt: user.createdAt,
-        }
+        }*/
     }
 
     async delete(id: string){
-        const result = await userCollection.deleteOne({_id: new ObjectId(id)})
+        const result = await commentCollection.deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1
+    }
+
+    async findCommentbyPostId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
+        const comments = await commentCollection.find({})
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
+        .sort({[sortBy] : sortDirection})
+        .toArray()
+
+        const totalCount = await commentCollection.countDocuments({_id: new ObjectId(id)})
+
+        const items = comments.map(c => {
+            return {
+                id: c._id,
+                content: c.content,
+                userId: c.userId,
+                userLogin: c.userLogin,
+                createdAt: c.createdAt,
+            }
+        })
+
+        return {    
+            pagesCount: Math.ceil(totalCount/pageSize),
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: totalCount,
+            items: items,
+        }
+    }
+
+    async createCommentbyPostId(comment: CommentType){
+        await commentCollection.insertOne(comment)
+        return {
+            //@ts-ignore
+            id: comment._id,
+            content: comment.content,
+            userId: comment.userId,
+            userLogin: comment.userLogin,
+            createdAt: comment.createdAt,
+        }
     }
 }

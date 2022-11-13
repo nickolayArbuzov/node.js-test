@@ -2,14 +2,6 @@ import {NextFunction, Request, Response} from 'express'
 import { validationResult, body, CustomValidator } from 'express-validator'
 import { BlogsRepo } from '../repositories/blogsRepo';
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if (req.headers?.authorization?.split(' ')[1] === new Buffer('admin:qwerty').toString('base64') && req.headers?.authorization?.split(' ')[0] === 'Basic'){
-        next()
-    } else {
-        res.sendStatus(401)
-    }
-}
-
 export const logger = (req: Request, res: Response, next: NextFunction) => {
     next()
 }
@@ -59,4 +51,6 @@ export const postBlogIdValidation = body('blogId').trim().isLength({min: 1, max:
 export const userLoginValidation = body('login').trim().isLength({min: 3, max: 10}).withMessage('field must be from 1 to 30 chars')
 export const userPasswordValidation = body('password').trim().isLength({min: 6, max: 20}).withMessage('field must be from 1 to 30 chars')
 export const userEmailValidation = body('email').custom(isValidEmail).withMessage('field must be email-format')
+
+export const commentContentValidation = body('content').trim().isLength({min: 20, max: 300}).withMessage('field must be from 20 to 300 chars')
 

@@ -13,8 +13,8 @@ export class CommentsController {
     }
 
     async create(req: Request, res: Response){
-        const user = await this.commentsService.create(req.body.login, req.body.password, req.body.email)
-        res.status(201).send(user)
+        /*const user = await this.commentsService.create()
+        res.status(201).send(user)*/
     }
 
     async delete(req: Request, res: Response){

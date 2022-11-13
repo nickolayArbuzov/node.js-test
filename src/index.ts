@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express'
-import * as dotenv from 'dotenv'
+import "dotenv/config";
 import bodyParser from "body-parser";
 import {blogsRouter} from "./routes/blogsRouter";
 import {postsRouter} from "./routes/postsRouter";
@@ -7,8 +7,6 @@ import { usersRouter } from './routes/usersRouter';
 import { authRouter } from './routes/authRouter';
 import { commentsRouter } from './routes/commentsRouter';
 import { runDb, blogCollection, postCollection, userCollection } from './repositories/db';
-
-dotenv.config()
 
 const port = process.env.PORT || 7777
 export const app = express()
@@ -31,11 +29,11 @@ app.get('/', (req: Request, res: Response) => {
     res.send({message: 'Inversify+'})
 })
 
-const startServer = async () => {
+/*const startServer = async () => {
     await runDb()
     return app.listen(port, () => {
         console.log(`App listening on port ${port}`)
     })
 }
 
-startServer()
+startServer()*/

@@ -11,6 +11,9 @@ import { UsersService } from './domain/usersService'
 import { UsersRepo } from './repositories/usersRepo'
 import { AuthController } from './controllers/authController'
 import { AuthService } from './domain/authService'
+import { CommentsController } from './controllers/commentsController'
+import { CommentsService } from './domain/commentsService'
+import { CommentsRepo } from './repositories/commentsRepo'
 
 export const container = new Container()
 
@@ -28,3 +31,7 @@ container.bind(UsersRepo).to(UsersRepo)
 
 container.bind(AuthController).to(AuthController)
 container.bind(AuthService).to(AuthService)
+
+container.bind(CommentsController).to(CommentsController)
+container.bind(CommentsService).to(CommentsService)
+container.bind(CommentsRepo).to(CommentsRepo)

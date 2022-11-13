@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
-import { UserType } from "../types";
+import { UserInputType } from "../types";
 import { userCollection } from "./db";
 
 @injectable()
@@ -42,7 +42,21 @@ export class UsersRepo {
         }
     }
 
-    async create(user: UserType){
+    async findById(id: string){
+        const user = await userCollection.findOne({_id: new ObjectId(id)})
+        if(user) {
+            return {
+                id: user._id.toString(),
+                login: user.login,
+                email: user.email,
+                createdAt: user.createdAt,
+            }
+        } else {
+            return null
+        }
+    }
+
+    async create(user: UserInputType){
         await userCollection.insertOne(user)
         return {
             //@ts-ignore

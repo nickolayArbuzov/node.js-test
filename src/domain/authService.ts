@@ -1,6 +1,7 @@
 import { injectable, inject } from "inversify";
 import { userCollection } from "../repositories/db";
 import bcrypt from 'bcrypt';
+import { jwtService } from "../application/jwtService";
 
 @injectable()
 export class AuthService {
@@ -12,11 +13,11 @@ export class AuthService {
         if(!candidate) {
             return false
         }
-
+        
         const candidateHash = await bcrypt.hash(password, candidate.passwordSalt)
-
-        if(candidateHash === candidate.passwordHash) {
-            return true
+//bcrypt.compare(password, )
+        if(candidateHash === candidate.passwordHash && candidate) {
+            return jwtService.createJwt(candidate._id.toString())
         } else {
             return false
         }
