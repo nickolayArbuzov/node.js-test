@@ -34,6 +34,14 @@ postsRouter.post('/:id/comments',
     commentContentValidation,
         postsController.createCommentbyPostId.bind(postsController))
 
+postsRouter.get('/', 
+    logger, 
+    pageNumberSanitizer, 
+    pageSizeSanitizer, 
+    sortBySanitizer, 
+    sortDirectionSanitizer, 
+        postsController.find.bind(postsController))
+
 postsRouter.post('/', 
     logger, 
     authMiddleware, 

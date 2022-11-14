@@ -32,8 +32,7 @@ export class BlogsRepo {
     async create(blog: BlogType){
         await blogCollection.insertOne(blog)
         return {
-            //@ts-ignore
-            id: blog._id,
+            id: blog.id,
             createdAt: blog.createdAt,
             name: blog.name,
             youtubeUrl: blog.youtubeUrl,
