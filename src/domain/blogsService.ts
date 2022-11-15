@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { injectable, inject } from "inversify";
 import { BlogsRepo } from "../repositories/blogsRepo";
 import { BlogType, PostType } from "../types";

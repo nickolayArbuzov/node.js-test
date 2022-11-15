@@ -12,9 +12,23 @@ export class CommentsController {
         res.send(result)
     }
 
-    async create(req: Request, res: Response){
-        /*const user = await this.commentsService.create()
-        res.status(201).send(user)*/
+    async findOne(req: Request, res: Response){
+        const result = await this.commentsService.findOne(req.params.id)
+        if(result) {
+            res.send(result)
+        } else {
+            res.sendStatus(404)
+        }
+    }
+
+    async update(req: Request, res: Response){
+        const candidatComment = await this.commentsService.findOneByUserId(req.user?.id!)
+        if (candidatComment) {
+            await this.commentsService.update(req.params.id, req.body, req.user?.id!)
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(403)
+        }
     }
 
     async delete(req: Request, res: Response){

@@ -25,8 +25,12 @@ describe('/users', () => {
         email: "www.mail-4@mail.com",
     }
     let correctInputModelAuth = {
-        login: 'login-4',
-        password: "password-4",
+        login: 'login-1',
+        password: "password-1",
+    }
+    let correctInputModelAuth2 = {
+        login: 'login-3',
+        password: "password-3",
     }
     let incorrectPassInputModelAuth = {
         login: 'login-4',
@@ -50,11 +54,15 @@ describe('/users', () => {
 
     let accessToken = ''
     let incorrectToken = '0000bGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzczODA3MmZhMjM0MmJmZTg1MzFhMjQiLCJpYXQiOjE2Njg1MTM5MDYsImV4cCI6MTY2ODYwMDMwNn0.0b5aWY3mwo9vOsglyEmMTr40xWOtSP0uSiU72gP-tdw'
+    let accessToken2 = ''
 
     let blogId = ''
 
     let postId = ''
     let incorrectPostId = ''
+
+    let commentId = ''
+    let incorrectCommentId = '0003b872d6a1bb7b389b9087'
 
     let realUserId = ''
     let incorrectUserId = '000d727e3f7e0f76da66c064'
@@ -101,7 +109,7 @@ describe('/users', () => {
 
         const res = await request(app).get(`/users`).set('Authorization', 'Basic YWRtaW46cXdlcnR5')
 
-        realUserId = res.body.items[0].id
+        realUserId = res.body.items[3].id
 
         expect(res.body).toStrictEqual({
             pagesCount: 1,
@@ -147,21 +155,23 @@ describe('/users', () => {
         expect(auth.body).toStrictEqual({
             accessToken: expect.any(String)
         })
+
+        const auth2 = await request(app).post('/auth/login').send(correctInputModelAuth2)
+        accessToken2 = auth2.body.accessToken
     })
 
     it('should return info about user by correct accesstoken', async () => {
         const auth = await request(app).get('/auth/me').set('Authorization', `Bearer ${accessToken}`)
     
         expect(auth.body).toStrictEqual({
-            accessToken: expect.any(String)
+            email: inputModelUser1.email,
+            login: inputModelUser1.login,
+            userId: realUserId,
         })
     })
 
     it('should return 401 if request for info about user by incorrect accesstoken', async () => {
-        const auth = await request(app).get('/auth/me').set('Authorization', `Bearer ${incorrectToken}`).expect(401)
-        expect(auth.body).toStrictEqual({
-            accessToken: expect.any(String)
-        })
+        await request(app).get('/auth/me').set('Authorization', `Bearer ${incorrectToken}`).expect(401)
     })
 
     it('should add comment with correct accesToken', async () => {
@@ -171,6 +181,8 @@ describe('/users', () => {
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(201)
 
+        commentId = comment.body.id
+
         expect(comment.body).toStrictEqual({
             content: "content-content-content",
             createdAt: expect.any(String),
@@ -178,6 +190,26 @@ describe('/users', () => {
             userId: realUserId,
             userLogin: correctInputModelAuth.login,
         })
+    })
+
+    it('should return comment by id', async () => {
+        const res = await request(app)
+            .get(`/comments/${commentId}`)
+            .expect(200)
+
+        expect(res.body).toStrictEqual({
+            content: "content-content-content",
+            createdAt: expect.any(String),
+            id: commentId,
+            userId: realUserId,
+            userLogin: correctInputModelAuth.login,
+        })
+    })
+
+    it('should return 404 if comment by id not found', async () => {
+        await request(app)
+            .get(`/comments/${incorrectCommentId}`)
+            .expect(404)
     })
 
     it('should return 401 if try to add comment with not valid token', async () => {
@@ -203,11 +235,27 @@ describe('/users', () => {
                     content: 'content-content-content',
                     id: expect.any(String),
                     userId: realUserId,
-                    userLogin: inputModelUser4.login,
+                    userLogin: inputModelUser1.login,
                     createdAt: expect.any(String)
                 },
             ]
         })
+    })
+
+    it('should return 204 if user update own comment', async () => {
+        await request(app)
+            .put(`/comments/${commentId}`)
+            .send({content: 'content-content-content-content'})
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(204)
+    })
+
+    it('should return 403 if user update alien comment', async () => {
+        await request(app)
+            .put(`/comments/${commentId}`)
+            .send({content: 'content-content-content-content'})
+            .set('Authorization', `Bearer ${accessToken2}`)
+            .expect(403)
     })
 
     it('should return 401 if pass not correct', async () => {

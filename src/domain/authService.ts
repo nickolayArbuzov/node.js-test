@@ -26,10 +26,11 @@ export class AuthService {
 
     async getMe(id: string){
         const user = await userCollection.findOne({_id: new ObjectId(id)})
-        console.log('user', user)
         if(user){
             return {
-                
+                email: user.email,
+                login: user.login,
+                userId: user._id,
             }
         } else {
             return false

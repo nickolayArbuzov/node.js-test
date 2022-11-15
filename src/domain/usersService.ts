@@ -21,10 +21,10 @@ export class UsersService {
         const passwordSalt = await bcrypt.genSalt(8)
         const passwordHash = await bcrypt.hash(password, passwordSalt)
 
-        /*const Salt = await bcrypt.genSalt()
+        /*
+        const Salt = await bcrypt.genSalt()
         const Hash = await bcrypt.hash('superpassword', '$2a$10$Vn9PcYBKm2y0GeJK.Kzn6.')
-        console.log('salt', Salt.length)
-        console.log('hash', Hash)*/
+        */
         
         const user: UserInputType = {
             login: login,

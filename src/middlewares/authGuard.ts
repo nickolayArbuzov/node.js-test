@@ -20,7 +20,6 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
     }
     const token = req.headers.authorization.split(' ')[1]
     const userId = await jwtService.getUserByAccessToken(token);
-
     if(!userId){
         res.sendStatus(401)
         return
@@ -40,7 +39,6 @@ class joinMw {
             res.sendStatus(401)
         }
        async jwtMiddleware   (req: Request, res: Response, next: NextFunction)  {
-            console.log(req.headers.authorization)
             const userService = container.resolve(UsersService)
             if(!req.headers.authorization){
                 res.send(401)

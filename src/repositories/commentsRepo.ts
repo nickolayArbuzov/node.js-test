@@ -5,6 +5,7 @@ import { commentCollection } from "./db";
 
 @injectable()
 export class CommentsRepo {
+
     async find(searchLoginTerm: any, searchEmailTerm: any, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
         const users = await commentCollection.find(
             {$or: [
@@ -37,6 +38,34 @@ export class CommentsRepo {
             totalCount: totalCount,
             items: items,
         }
+    }
+
+    async findOne(id: string){
+        const comment = await commentCollection.findOne({_id: new ObjectId(id)})
+        if(comment) {
+            return {
+                id: comment._id,
+                content: comment.content,
+                userId: comment.userId,
+                userLogin: comment.userLogin,
+                createdAt: comment.createdAt,
+            }
+        }
+        return false
+    }
+
+    async findOneByUserId(id: string){
+        const comment = await commentCollection.findOne({userId: id})
+        if(comment) {
+            return {
+                id: comment._id,
+                content: comment.content,
+                userId: comment.userId,
+                userLogin: comment.userLogin,
+                createdAt: comment.createdAt,
+            }
+        }
+        return false
     }
 
     async update(comment: CommentType){

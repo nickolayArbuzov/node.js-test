@@ -14,16 +14,20 @@ const commentsController = container.resolve(CommentsController)
 
 export const commentsRouter = Router({})
 
-commentsRouter.get('/:id', 
+commentsRouter.get('/', 
     logger,
         commentsController.find.bind(commentsController))
 
-commentsRouter.put('/:', 
+commentsRouter.get('/:id', 
+    logger,
+        commentsController.findOne.bind(commentsController))
+
+commentsRouter.put('/:id', 
     logger,
     jwtMiddleware,
     commentContentValidation,
     inputValidationMiddleware, 
-        commentsController.create.bind(commentsController))
+        commentsController.update.bind(commentsController))
 
 commentsRouter.delete('/:id', 
     logger,

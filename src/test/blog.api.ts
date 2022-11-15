@@ -9,7 +9,6 @@ const port = 4444
 const startServer = async () => {
     await runDb()
     return app.listen(port, () => {
-        console.log(`App listening on port ${port}`)
     })
 }
 
