@@ -1,19 +1,8 @@
 import request from 'supertest'
-import { app } from '../index'
-import { runDb } from '../repositories/db'
-
-const port = 4444
-const startServer = async () => {
-    await runDb()
-    return app.listen(port, () => {
-        console.log(`App listening on port ${port}`)
-    })
-}
+import { app } from '../app'
 
 jest.setTimeout(60000)
 describe('/users', () => {
-
-    const server = startServer()
 
     let inputModelUser1 = {
         login: 'login-1',
@@ -48,8 +37,21 @@ describe('/users', () => {
         password: "password-5",
     }
 
+    let inputModelBlog1 = {
+        name: 'name-1',
+        youtubeUrl: 'https://someurl1.com',
+    }
+
+    let inputModelPost1 = {
+        title: "title-1",
+        shortDescription: "shortDescription-1",
+        content: "content-1",
+    }
+
     let accessToken = ''
-    let incorrectToken = ''
+    let incorrectToken = '0000bGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzczODA3MmZhMjM0MmJmZTg1MzFhMjQiLCJpYXQiOjE2Njg1MTM5MDYsImV4cCI6MTY2ODYwMDMwNn0.0b5aWY3mwo9vOsglyEmMTr40xWOtSP0uSiU72gP-tdw'
+
+    let blogId = ''
 
     let postId = ''
     let incorrectPostId = ''
@@ -61,45 +63,23 @@ describe('/users', () => {
         await request(app).delete('/testing/all-data').expect(204)
     })
 
-    /*it('should create and return one post', async () => {
-        await request(app) 
+    it('should return added blog if values correct', async () => {
+        const res = await request(app)
+            .post('/blogs')
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send(inputModelBlog1).expect(201)
+
+        blogId = res.body.id
+    })
+
+    it('should create and return one post', async () => {
+        const res = await request(app) 
             .post('/posts')
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
-            .send({...inputModelPost2, blogId: blogId}).expect(201)
+            .send({...inputModelPost1, blogId: blogId}).expect(201)
 
-        const res = await request(app)
-            .get('/posts')
-            .expect(200)
-
-        expect(res.body).toStrictEqual(
-            {
-                pagesCount: Math.ceil(2/10),
-                page: 1,
-                pageSize: 10,
-                totalCount: 2,
-                items:[
-                    {
-                        createdAt: expect.any(String),
-                        id: expect.any(String),
-                        title: inputModelPost2.title,
-                        shortDescription: inputModelPost2.shortDescription,
-                        content: inputModelPost2.content,
-                        blogId: blogId,
-                        blogName: expect.any(String),
-                    }, 
-                    {
-                        createdAt: expect.any(String),
-                        id: expect.any(String),
-                        title: inputModelPost1.title,
-                        shortDescription: inputModelPost1.shortDescription,
-                        content: inputModelPost1.content,
-                        blogId: blogId,
-                        blogName: expect.any(String),
-                    },
-                ]
-            }
-        )
-    })*/
+        postId = res.body.id
+    })
 
     it('should return added user if values correct', async () => {
         await request(app)
@@ -169,27 +149,64 @@ describe('/users', () => {
         })
     })
 
+    it('should return info about user by correct accesstoken', async () => {
+        const auth = await request(app).get('/auth/me').set('Authorization', `Bearer ${accessToken}`)
+    
+        expect(auth.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
+    })
+
+    it('should return 401 if request for info about user by incorrect accesstoken', async () => {
+        const auth = await request(app).get('/auth/me').set('Authorization', `Bearer ${incorrectToken}`).expect(401)
+        expect(auth.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
+    })
+
     it('should add comment with correct accesToken', async () => {
-        const auth = await request(app).post('/gfdg/comments').send(correctInputModelAuth).expect(200)
-        accessToken = auth.body.accessToken
-        expect(auth.body).toStrictEqual({
-            accessToken: expect.any(String)
+        const comment = await request(app)
+            .post(`/posts/${postId}/comments`)
+            .send({content: 'content-content-content'})
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(201)
+
+        expect(comment.body).toStrictEqual({
+            content: "content-content-content",
+            createdAt: expect.any(String),
+            id: expect.any(String),
+            userId: realUserId,
+            userLogin: correctInputModelAuth.login,
         })
     })
 
-    it('should return 403 if try to add comment with not valid token', async () => {
-        const auth = await request(app).post('/gfdg/comments').send(correctInputModelAuth).expect(403)
-        accessToken = auth.body.accessToken
-        expect(auth.body).toStrictEqual({
-            accessToken: expect.any(String)
-        })
+    it('should return 401 if try to add comment with not valid token', async () => {
+        await request(app)
+            .post(`/posts/${postId}/comments`)
+            .send({content: 'content-content-content'})
+            .expect(401)
     })
 
-    it('should return accesstoken with login by correct values', async () => {
-        const auth = await request(app).post('/auth/login').send(correctInputModelAuth).expect(200)
-        accessToken = auth.body.accessToken
-        expect(auth.body).toStrictEqual({
-            accessToken: expect.any(String)
+    it('should return comments by postId', async () => {
+        const res = await request(app)
+            .get(`/posts/${postId}/comments`)
+            .send({content: 'content-content-content'})
+            .expect(200) 
+        
+        expect(res.body).toStrictEqual({
+            pagesCount: 1,
+            page: 1,
+            pageSize: 10,
+            totalCount: 1,
+            items: [
+                {
+                    content: 'content-content-content',
+                    id: expect.any(String),
+                    userId: realUserId,
+                    userLogin: inputModelUser4.login,
+                    createdAt: expect.any(String)
+                },
+            ]
         })
     })
 
@@ -235,7 +252,5 @@ describe('/users', () => {
         
         expect(res.body.items.length).toBe(3)
     })
-
-    server.then((server) => server.close())
 
 })

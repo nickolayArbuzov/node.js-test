@@ -56,13 +56,13 @@ export class CommentsRepo {
     }
 
     async findCommentbyPostId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
-        const comments = await commentCollection.find({})
+        const comments = await commentCollection.find({postId: id})
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
         .sort({[sortBy] : sortDirection})
         .toArray()
 
-        const totalCount = await commentCollection.countDocuments({_id: new ObjectId(id)})
+        const totalCount = await commentCollection.countDocuments({postId: id})
 
         const items = comments.map(c => {
             return {

@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { app } from '../index'
+import { app } from '../app'
 import { runDb } from '../repositories/db'
 
 //регулярка для даты с time-zone
