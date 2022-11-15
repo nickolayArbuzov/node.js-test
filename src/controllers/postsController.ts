@@ -16,6 +16,7 @@ export class PostsController {
     }
 
     async createCommentbyPostId(req: Request, res: Response){
+        
         const post = await this.postsService.createCommentbyPostId(req.params.id, req.body.content, req.user?.id!, req.user?.login!)
         res.status(201).send(post)
     }

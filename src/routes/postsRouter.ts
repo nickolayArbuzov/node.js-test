@@ -32,6 +32,7 @@ postsRouter.post('/:id/comments',
     logger, 
     jwtMiddleware,
     commentContentValidation,
+    inputValidationMiddleware, 
         postsController.createCommentbyPostId.bind(postsController))
 
 postsRouter.get('/', 

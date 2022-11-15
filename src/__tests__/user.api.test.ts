@@ -174,7 +174,7 @@ describe('/users', () => {
         await request(app).get('/auth/me').set('Authorization', `Bearer ${incorrectToken}`).expect(401)
     })
 
-    it('should add comment with correct accesToken', async () => {
+    it('should add valid comment with correct accesToken', async () => {
         const comment = await request(app)
             .post(`/posts/${postId}/comments`)
             .send({content: 'content-content-content'})
@@ -190,6 +190,15 @@ describe('/users', () => {
             userId: realUserId,
             userLogin: correctInputModelAuth.login,
         })
+    })
+
+    it('should return 400 if not-valid comment with correct accesToken, try to add', async () => {
+        await request(app)   
+            .post(`/posts/${postId}/comments`)
+            .send({content: 'content'})
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(400)
+        
     })
 
     it('should return comment by id', async () => {
@@ -259,6 +268,14 @@ describe('/users', () => {
             userLogin: expect.any(String),
             createdAt: expect.any(String),
         })
+    })
+
+    it('should return 404 if user update own missing comment', async () => {
+        await request(app)
+            .put(`/comments/${incorrectCommentId}`)
+            .send({content: 'content-content-content-content'})
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(404)
     })
 
     it('should return 403 if user update alien comment', async () => {

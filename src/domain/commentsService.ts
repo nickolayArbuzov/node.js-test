@@ -21,7 +21,7 @@ export class CommentsService {
     }
 
     async update(commentId: string, comment: CommentType){
-        return this.commentsRepo.update(commentId, comment)
+        return await this.commentsRepo.update(commentId, comment)
     }
 
     async delete(id: string){
