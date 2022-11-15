@@ -20,9 +20,8 @@ export class CommentsService {
         return await this.commentsRepo.findOneByUserId(userId)
     }
 
-    async update(commentId: string, comment: CommentType, userId: string){
-        const candidatComment = this.commentsRepo.findOne(commentId)
-        return this.commentsRepo.update(comment)
+    async update(commentId: string, comment: CommentType){
+        return this.commentsRepo.update(commentId, comment)
     }
 
     async delete(id: string){

@@ -24,7 +24,7 @@ export class CommentsController {
     async update(req: Request, res: Response){
         const candidatComment = await this.commentsService.findOneByUserId(req.user?.id!)
         if (candidatComment) {
-            await this.commentsService.update(req.params.id, req.body, req.user?.id!)
+            await this.commentsService.update(req.params.id, req.body)
             res.sendStatus(204)
         } else {
             res.sendStatus(403)

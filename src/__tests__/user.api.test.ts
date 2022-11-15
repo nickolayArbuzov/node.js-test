@@ -248,6 +248,17 @@ describe('/users', () => {
             .send({content: 'content-content-content-content'})
             .set('Authorization', `Bearer ${accessToken}`)
             .expect(204)
+
+        const comment = await request(app)
+            .get(`/comments/${commentId}`)
+        
+        expect(comment.body).toStrictEqual({
+            id: commentId,
+            content: "content-content-content-content",
+            userId: expect.any(String),
+            userLogin: expect.any(String),
+            createdAt: expect.any(String),
+        })
     })
 
     it('should return 403 if user update alien comment', async () => {

@@ -68,15 +68,9 @@ export class CommentsRepo {
         return false
     }
 
-    async update(comment: CommentType){
-        /*await commentCollection.updateOne()
-        return {
-            //@ts-ignore
-            id: user._id,
-            login: user.login,
-            email: user.email,
-            createdAt: user.createdAt,
-        }*/
+    async update(commentId: string, comment: CommentType){
+        const result = await commentCollection.updateOne({_id: new ObjectId(commentId)}, {$set: comment})
+        return result.matchedCount === 1
     }
 
     async delete(id: string){
