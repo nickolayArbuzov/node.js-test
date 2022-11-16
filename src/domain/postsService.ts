@@ -20,14 +20,18 @@ export class PostsService {
     }
 
     async createCommentbyPostId(id: string, content: string, userId: string, userLogin: string){
-        const comment: CommentType = {
-            content: content,
-            userId: userId,
-            userLogin: userLogin,
-            postId: id,
-            createdAt: new Date().toISOString()
-        }
-        return await this.сommentsRepo.createCommentbyPostId(comment)
+        const candidatPost = await this.postsRepo.findById(id)
+        if(candidatPost) {
+            const comment: CommentType = {
+                content: content,
+                userId: userId,
+                userLogin: userLogin,
+                postId: id,
+                createdAt: new Date().toISOString()
+            }
+            return await this.сommentsRepo.createCommentbyPostId(comment)
+        }  
+        return false
     }
 
     async find(pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){

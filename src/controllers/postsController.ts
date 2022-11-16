@@ -17,13 +17,15 @@ export class PostsController {
         } else {
             res.sendStatus(404)
         }
-        
     }
 
     async createCommentbyPostId(req: Request, res: Response){
-        
         const post = await this.postsService.createCommentbyPostId(req.params.id, req.body.content, req.user?.id!, req.user?.login!)
-        res.status(201).send(post)
+        if(post) {
+            res.status(201).send(post)
+        } else {
+            res.sendStatus(404)
+        }
     }
 
     async find(req: Request, res: Response){

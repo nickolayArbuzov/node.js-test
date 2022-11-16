@@ -192,6 +192,14 @@ describe('/users', () => {
         })
     })
 
+    it('should return 404 if try add valid comment with correct accesToken to incorrect postId', async () => {
+        await request(app)
+            .post(`/posts/${incorrectPostId}/comments`)
+            .send({content: 'content-content-content'})
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(404)
+    })
+
     it('should return 400 if not-valid comment with correct accesToken, try to add', async () => {
         await request(app)   
             .post(`/posts/${postId}/comments`)
