@@ -22,23 +22,28 @@ export class CommentsController {
     }
 
     async update(req: Request, res: Response){
-        const candidatComment = await this.commentsService.findOneByUserId(req.user?.id!)
+        const candidatComment = await this.commentsService.findOne(req.params.id)
         if (candidatComment) {
-            if(candidatComment.id.toString() !== req.params.id){
-                res.sendStatus(404)
+            if(candidatComment.userId !== req.user?.id){
+                res.sendStatus(403)
             } else {
                 await this.commentsService.update(req.params.id, req.body)
                 res.sendStatus(204)
             }
         } else {
-            res.sendStatus(403)
+            res.sendStatus(404)
         }
     }
 
     async delete(req: Request, res: Response){
-        const result = await this.commentsService.delete(req.params.id)
-        if(result) {
-            res.sendStatus(204)
+        const candidatComment = await this.commentsService.findOne(req.params.id)
+        if (candidatComment) {
+            if(candidatComment.userId !== req.user?.id){
+                res.sendStatus(403)
+            } else {
+                await this.commentsService.delete(req.params.id)
+                res.sendStatus(204)
+            }
         } else {
             res.sendStatus(404)
         }

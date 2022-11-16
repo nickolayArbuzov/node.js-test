@@ -286,6 +286,27 @@ describe('/users', () => {
             .expect(403)
     })
 
+    it('should return 403 if user delete alien comment', async () => {
+        await request(app)
+            .delete(`/comments/${commentId}`)
+            .set('Authorization', `Bearer ${accessToken2}`) 
+            .expect(403)
+    })
+
+    it('should return 204 if user delete own comment', async () => {
+        await request(app)
+            .delete(`/comments/${commentId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(204)
+    })
+
+    it('should return 404 if user delete own missing comment', async () => {
+        await request(app)
+            .delete(`/comments/${incorrectCommentId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(404)
+    })
+
     it('should return 401 if pass not correct', async () => {
         const auth = await request(app).post('/auth/login').send(incorrectPassInputModelAuth).expect(401)
         expect(auth.body).toStrictEqual({})
