@@ -59,7 +59,7 @@ describe('/users', () => {
     let blogId = ''
 
     let postId = ''
-    let incorrectPostId = ''
+    let incorrectPostId = '1113b872d6a1bb7b389b9087'
 
     let commentId = ''
     let incorrectCommentId = '0003b872d6a1bb7b389b9087'
@@ -249,6 +249,13 @@ describe('/users', () => {
                 },
             ]
         })
+    })
+
+    it('should return 404 if try to find comments by incorrect postId', async () => {
+        await request(app)
+            .get(`/posts/${incorrectPostId}/comments`)
+            .send({content: 'content-content-content'})
+            .expect(404)
     })
 
     it('should return 204 if user update own comment', async () => {

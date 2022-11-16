@@ -12,7 +12,12 @@ export class PostsController {
 
     async findCommentbyPostId(req: Request, res: Response){
         const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
-        res.send(result)
+        if(result) {
+            res.send(result)
+        } else {
+            res.sendStatus(404)
+        }
+        
     }
 
     async createCommentbyPostId(req: Request, res: Response){

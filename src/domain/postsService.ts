@@ -12,7 +12,11 @@ export class PostsService {
     ) {}
 
     async findCommentbyPostId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
-        return await this.сommentsRepo.findCommentbyPostId(id, pageNumber, pageSize, sortBy, sortDirection)
+        const candidatPost = await this.postsRepo.findById(id)
+        if(candidatPost) {
+            return await this.сommentsRepo.findCommentbyPostId(id, pageNumber, pageSize, sortBy, sortDirection)
+        }   
+        return false
     }
 
     async createCommentbyPostId(id: string, content: string, userId: string, userLogin: string){
