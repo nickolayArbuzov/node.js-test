@@ -1,7 +1,6 @@
 import { injectable, inject } from "inversify";
 import {Request, Response} from 'express'
 import { PostsService } from "../domain/postsService";
-import { UsersRepo } from "../repositories/usersRepo";
 
 @injectable()
 export class PostsController {
