@@ -7,8 +7,8 @@ export const sendEmail = async (email: string, code: string) => {
     host: 'smtp.gmail.com',
     port: 465,
     auth: {
-      user: process.env.GMAIL_ACCAUNT,
-      pass: process.env.GMAIL_PASSWORD,
+      user: 'nickarb10888@gmail.com',
+      pass: 'treecyvaqtxnhmzs',
     }
   })
 
@@ -18,7 +18,7 @@ export const sendEmail = async (email: string, code: string) => {
      </p>`
 
   await transporter.sendMail({
-    from: process.env.GMAIL_ACCAUNT,
+    from: 'nickarb10888@gmail.com',
     to: email,
     html: emailTemplate(code),
     subject: 'Регистрация',

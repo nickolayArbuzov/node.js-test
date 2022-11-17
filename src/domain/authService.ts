@@ -52,7 +52,7 @@ export class AuthService {
             createdAt: new Date().toISOString(),
         }
 
-        this.usersRepo.create(user)
+        await this.usersRepo.create(user)
         sendEmail(email, code)
         return true
     }

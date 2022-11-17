@@ -7,7 +7,7 @@ describe('/users', () => {
     let inputModelUser1 = {
         login: 'login-1',
         password: "password-1",
-        email: "www.mail-1@mail.com",
+        email: "nickarbuzov@yandex.by",
     }
     let inputModelUser2 = {
         login: 'login-2',
