@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import { validationResult, body, CustomValidator } from 'express-validator'
 import { BlogsRepo } from '../repositories/blogsRepo';
+import { UsersRepo } from '../repositories/usersRepo';
 
 export const logger = (req: Request, res: Response, next: NextFunction) => {
     next()
@@ -23,6 +24,15 @@ const isValidEmail: CustomValidator = value => {
 const isBlogIdValid: CustomValidator = async value => {
     const blogsRepo = new BlogsRepo()
     const flag = await blogsRepo.findById(value)
+    if (!flag) {
+        throw new Error('Invalid BlogID')
+    }
+    return true
+}
+
+const isCodeFromEmailValid: CustomValidator = async value => {
+    const usersRepo = new UsersRepo()
+    const flag = await usersRepo.findById(value)
     if (!flag) {
         throw new Error('Invalid BlogID')
     }
@@ -54,3 +64,4 @@ export const userEmailValidation = body('email').custom(isValidEmail).withMessag
 
 export const commentContentValidation = body('content').trim().isLength({min: 20, max: 300}).withMessage('field must be from 20 to 300 chars')
 
+export const codeFromEmailValidation = body('code').custom(isCodeFromEmailValid).withMessage('code not correct')

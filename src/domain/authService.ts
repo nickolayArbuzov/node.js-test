@@ -3,13 +3,17 @@ import { userCollection } from "../repositories/db";
 import bcrypt from 'bcrypt';
 import { jwtService } from "../application/jwtService";
 import { ObjectId } from "mongodb";
+import { UserInputType } from "../types";
+import { UsersRepo } from "../repositories/usersRepo";
+import { v4 } from "uuid";
+import { sendEmail } from "../adapters/mail.adapter";
 
 @injectable()
 export class AuthService {
-    constructor() {
+    constructor(@inject(UsersRepo) protected usersRepo: UsersRepo) {
     }
 
-    async create(login: string, password: string){
+    async login(login: string, password: string){
         const candidate = await userCollection.findOne({login: login})
         if(!candidate) {
             return false
@@ -22,6 +26,43 @@ export class AuthService {
         } else {
             return false
         }
+    }
+
+    async refreshToken(req: Request, res: Response){
+        return true
+    }
+
+    async registrationConfirmation(req: Request, res: Response){
+        return true
+    }
+
+    async registration(login: string, password: string, email: string){
+
+        const passwordSalt = await bcrypt.genSalt(8)
+        const passwordHash = await bcrypt.hash(password, passwordSalt)
+        const code = v4()
+
+        const user: UserInputType = {
+            login: login,
+            passwordHash: passwordHash,
+            passwordSalt: passwordSalt,
+            email: email,
+            isActivated: false,
+            code: code,
+            createdAt: new Date().toISOString(),
+        }
+
+        this.usersRepo.create(user)
+        sendEmail(email, code)
+        return true
+    }
+
+    async registrationEmailResending(req: Request, res: Response){
+        return true
+    }
+
+    async logout(req: Request, res: Response){
+        return true
     }
 
     async getMe(id: string){

@@ -21,6 +21,8 @@ export type UserInputType = {
         passwordHash: string,
         passwordSalt: string,
         email: string,
+        isActivated: boolean,
+        code: string,
         createdAt: string,
 }
 

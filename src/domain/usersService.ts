@@ -31,6 +31,8 @@ export class UsersService {
             passwordHash: passwordHash,
             passwordSalt: passwordSalt,
             email: email,
+            isActivated: false,
+            code: '',
             createdAt: new Date().toISOString(),
         }
 
