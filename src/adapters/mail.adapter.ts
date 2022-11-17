@@ -16,7 +16,7 @@ export const sendEmail = async (email: string, code: string) => {
       <p>To finish registration please follow the link below:
         <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
      </p>`
-
+ 
   await transporter.sendMail({
     from: 'nickarb10888@gmail.com',
     to: email,
