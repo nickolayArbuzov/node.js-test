@@ -11,6 +11,8 @@ const authController = container.resolve(AuthController)
 
 export const authRouter = Router({})
 
+
+
 authRouter.post('/login', 
     logger,
         authController.login.bind(authController))

@@ -53,7 +53,7 @@ export class AuthService {
         }
 
         await this.usersRepo.create(user)
-        sendEmail(email, code)
+        await sendEmail(email, code)
     }
 
     async registrationEmailResending(req: Request, res: Response){

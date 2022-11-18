@@ -48,11 +48,9 @@ describe('/users', () => {
     it('should return registration user if values correct', async () => {
         await request(app)
             .post('/auth/registration')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(inputModelUser1).expect(204)
         await request(app)
             .post('/auth/registration')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(inputModelUser2).expect(204)
 
         const res = await request(app).get(`/users`).set('Authorization', 'Basic YWRtaW46cXdlcnR5')
