@@ -17,26 +17,26 @@ export class AuthController {
     }
 
     async refreshToken(req: Request, res: Response){
-        return true
+        res.send({})
     }
 
     async registrationConfirmation(req: Request, res: Response){
-        return true
+        res.send({})
     }
 
     async registration(req: Request, res: Response){
         const result = await this.authService.registration(req.body.login, req.body.password, req.body.email)
         if(result){
             res.sendStatus(204)
-        }
+        } else res.send({})
     }
 
     async registrationEmailResending(req: Request, res: Response){
-        return true
+        res.send({})
     }
 
     async logout(req: Request, res: Response){
-        return true
+        res.send({})
     }
 
     async getMe(req: Request, res: Response){
