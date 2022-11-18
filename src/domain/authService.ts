@@ -54,7 +54,6 @@ export class AuthService {
 
         await this.usersRepo.create(user)
         sendEmail(email, code)
-        return true
     }
 
     async registrationEmailResending(req: Request, res: Response){

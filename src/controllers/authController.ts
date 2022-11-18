@@ -25,10 +25,8 @@ export class AuthController {
     }
 
     async registration(req: Request, res: Response){
-        const result = await this.authService.registration(req.body.login, req.body.password, req.body.email)
-        if(result){
-            res.sendStatus(204)
-        } else res.send({})
+        await this.authService.registration(req.body.login, req.body.password, req.body.email)
+        res.sendStatus(204)
     }
 
     async registrationEmailResending(req: Request, res: Response){
