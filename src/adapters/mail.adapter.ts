@@ -17,7 +17,7 @@ export const sendEmail = async (email: string, code: string) => {
  
   await transporter.sendMail({
     from: process.env.GMAIL_ACCAUNT,
-    to: email,
+    to: 'nickarbuzov@yandex.by',
     html: emailTemplate(code),
     subject: 'Registration vercel',
   })
