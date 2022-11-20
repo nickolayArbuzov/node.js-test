@@ -3,7 +3,6 @@ import { container } from "../composition-root";
 import { UsersController } from "../controllers/usersController";
 import { 
     inputValidationMiddleware, 
-    logger,
     userEmailValidation,
     userLoginValidation,
     userPasswordValidation, 
@@ -25,7 +24,6 @@ const usersController = container.resolve(UsersController)
 export const usersRouter = Router({})
 
 usersRouter.get('/', 
-    logger,
     authMiddleware, 
     searchLoginTermSanitizer, 
     searchEmailTermSanitizer,
@@ -36,7 +34,6 @@ usersRouter.get('/',
         usersController.find.bind(usersController))
 
 usersRouter.post('/', 
-    logger,
     authMiddleware, 
     userLoginValidation,
     userPasswordValidation,
@@ -45,6 +42,5 @@ usersRouter.post('/',
         usersController.create.bind(usersController))
 
 usersRouter.delete('/:id', 
-    logger,
     authMiddleware, 
         usersController.delete.bind(usersController))

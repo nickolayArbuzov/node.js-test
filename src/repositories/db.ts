@@ -10,7 +10,7 @@ export const postCollection = client.db("test").collection<PostType>("posts");
 export const userCollection = client.db("test").collection<UserInputType>("users");
 export const commentCollection = client.db("test").collection<CommentType>("comments");
 export const jwtCollection = client.db("test").collection("jwt");
-export const logCollection = client.db("test").collection<PostType>("logs");
+export const logCollection = client.db("test").collection("logs");
 
 export async function runDb(){
     try {

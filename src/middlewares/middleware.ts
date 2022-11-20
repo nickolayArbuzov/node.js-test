@@ -1,9 +1,12 @@
 import {NextFunction, Request, Response} from 'express'
 import { validationResult, body, CustomValidator } from 'express-validator'
 import { BlogsRepo } from '../repositories/blogsRepo';
+import { logCollection } from '../repositories/db';
 import { UsersRepo } from '../repositories/usersRepo';
 
-export const logger = (req: Request, res: Response, next: NextFunction) => {
+
+export const logger = async (req: Request, res: Response, next: NextFunction) => {
+    await logCollection.insertOne({cookie: req.cookies, url: req.originalUrl})
     next()
 }
 

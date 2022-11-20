@@ -71,13 +71,13 @@ describe('/users', () => {
         accessToken2 = auth2.body.accessToken
     })
 
-    /*it('should refresh-tokens', async () => {
+    it('should refresh-tokens', async () => {
         const auth = await request(app).post('/auth/refresh-token').set('Cookie', ['myApp-token=12345667', 'myApp-other=blah']).send(correctInputModelAuth).expect(200)
         accessToken = auth.body.accessToken
         expect(auth.body).toStrictEqual({
             accessToken: expect.any(String)
         })
-    })*/
+    })
     
     it('should return errors if values incorrect', async () => {
         await request(app).post('/auth/registration').send({}).expect(400, 

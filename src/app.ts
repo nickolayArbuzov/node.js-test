@@ -5,7 +5,7 @@ import {postsRouter} from "./routes/postsRouter";
 import { usersRouter } from './routes/usersRouter';
 import { authRouter } from './routes/authRouter';
 import { commentsRouter } from './routes/commentsRouter';
-import { blogCollection, commentCollection, postCollection, userCollection } from './repositories/db';
+import { blogCollection, commentCollection, jwtCollection, logCollection, postCollection, userCollection } from './repositories/db';
 
 const port = process.env.PORT || 7777
 export const app = express()
@@ -23,6 +23,8 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     await blogCollection.deleteMany({})
     await userCollection.deleteMany({})
     await commentCollection.deleteMany({})
+    await jwtCollection.deleteMany({})
+    await logCollection.deleteMany({})
     res.sendStatus(204)
 }) 
 
