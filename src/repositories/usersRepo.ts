@@ -79,8 +79,13 @@ export class UsersRepo {
         return user
     }
 
-    async updateUser(code: string){
+    async activateUserByCode(code: string){
         const user = await userCollection.updateOne({code: code}, {$set: {isActivated: true}})
+        return user.matchedCount === 1
+    }
+
+    async resendUserNewCode(email: string, code: string){
+        const user = await userCollection.updateOne({email: email}, {$set: {code: code}})
         return user.matchedCount === 1
     }
 

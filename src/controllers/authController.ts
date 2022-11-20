@@ -31,7 +31,8 @@ export class AuthController {
     }
 
     async registrationEmailResending(req: Request, res: Response){
-        res.send({})
+        await this.authService.registrationEmailResending(req.body.email)
+        res.sendStatus(204)
     }
 
     async logout(req: Request, res: Response){

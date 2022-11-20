@@ -33,7 +33,7 @@ export class AuthService {
     }
 
     async registrationConfirmation(code: string){
-        return await this.usersRepo.updateUser(code)
+        return await this.usersRepo.activateUserByCode(code)
     }
 
     async registration(login: string, password: string, email: string){
@@ -53,10 +53,13 @@ export class AuthService {
         }
 
         await this.usersRepo.create(user)
-        await sendEmail(email, code)
+        await sendEmail(email, code, 'confirm-email')
     }
 
-    async registrationEmailResending(req: Request, res: Response){
+    async registrationEmailResending(email: string){
+        const code = v4()
+        await this.usersRepo.resendUserNewCode(email, code)
+        await sendEmail(email, code, 'confirm-registration')
         return true
     }
 

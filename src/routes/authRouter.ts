@@ -2,7 +2,7 @@ import {Router} from "express";
 import { container } from "../composition-root";
 import { AuthController } from "../controllers/authController";
 import { jwtMiddleware } from "../middlewares/authGuard";
-import { userEmailIsExistsValidation, userLoginIsExistsValidation, userCodeRegistrationIsValid } from "../middlewares/checkUserMiddleware";
+import { userEmailIsExistsValidation, userLoginIsExistsValidation, userCodeRegistrationIsValid, userEmailConfirmValidation } from "../middlewares/checkUserMiddleware";
 import { 
     inputValidationMiddleware,
     logger, userEmailValidation, userLoginValidation, userPasswordValidation, 
@@ -11,8 +11,6 @@ import {
 const authController = container.resolve(AuthController)
 
 export const authRouter = Router({})
-
-
 
 authRouter.post('/login', 
     logger,
@@ -40,6 +38,9 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-email-resending', 
     logger,
+    userEmailConfirmValidation,
+    userEmailValidation,
+    inputValidationMiddleware, 
         authController.registrationEmailResending.bind(authController))
 
 authRouter.post('/logout', 
