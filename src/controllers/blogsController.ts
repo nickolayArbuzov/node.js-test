@@ -13,7 +13,7 @@ export class BlogsController {
     }
 
     async create(req: Request, res: Response){
-        const blog = await this.blogsService.create(req.body.name, req.body.youtubeUrl)
+        const blog = await this.blogsService.create(req.body.name, req.body.description, req.body.websiteUrl)
         res.status(201).send(blog)
     }
 

@@ -72,8 +72,8 @@ describe('/users', () => {
     it('should return errors if values incorrect', async () => {
         await request(app).post('/auth/registration').send({}).expect(400, 
             {errorsMessages: [
-                { message: 'field must be from 1 to 30 chars', field: 'login' },
-                { message: 'field must be from 1 to 30 chars', field: 'password' },
+                { message: 'field must be from 3 to 10 chars', field: 'login' },
+                { message: 'field must be from 6 to 20 chars', field: 'password' },
                 { message: 'field must be email-format', field: 'email' },
             ]})
     })

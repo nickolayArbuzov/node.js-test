@@ -4,6 +4,7 @@ import { BlogsController } from "../controllers/blogsController";
 import { 
     blogNameValidation, 
     blogUrlValidation, 
+    blogDescriptionValidation,
     inputValidationMiddleware, 
     logger, 
     postBlogIdValidation, 
@@ -34,6 +35,7 @@ blogsRouter.post('/',
     authMiddleware, 
     blogUrlValidation, 
     blogNameValidation, 
+    blogDescriptionValidation,
     inputValidationMiddleware, 
         blogsController.create.bind(blogsController))
 

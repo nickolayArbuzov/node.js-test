@@ -11,7 +11,8 @@ export type PostType = {
 export type BlogType = {
         id?: string,
         name: string,
-        youtubeUrl: string,
+        description: string,
+        websiteUrl: string,
         createdAt: string,
 }
 

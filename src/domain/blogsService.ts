@@ -12,10 +12,11 @@ export class BlogsService {
         return await this.blogsRepo.find(searchNameTerm, pageNumber, pageSize, sortBy, sortDirection)
     }
 
-    async create(name: string, youtubeUrl: string){
+    async create(name: string, description: string, websiteUrl: string){
         const blog: BlogType = {
             name: name,
-            youtubeUrl: youtubeUrl,
+            description: description,
+            websiteUrl: websiteUrl,
             createdAt: new Date().toISOString()
         }
         return await this.blogsRepo.create(blog)

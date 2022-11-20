@@ -36,7 +36,8 @@ export class BlogsRepo {
             id: blog._id,
             createdAt: blog.createdAt,
             name: blog.name,
-            youtubeUrl: blog.youtubeUrl,
+            description: blog.description,
+            websiteUrl: blog.websiteUrl,
         }
     }
 
@@ -95,7 +96,8 @@ export class BlogsRepo {
                 id: blog._id,
                 createdAt: blog.createdAt,
                 name: blog.name,
-                youtubeUrl: blog.youtubeUrl,
+                description: blog.description,
+                websiteUrl: blog.websiteUrl,
             }
         }
         return false

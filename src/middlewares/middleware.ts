@@ -51,15 +51,16 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
 }
 
 export const blogNameValidation = body('name').trim().isLength({min: 1, max: 15}).withMessage('field must be from 1 to 15 chars')
-export const blogUrlValidation = body('youtubeUrl').custom(isValidUrl).isLength({min: 1, max: 100}).withMessage('field must be from 1 to 100 chars')
+export const blogUrlValidation = body('websiteUrl').custom(isValidUrl).isLength({min: 1, max: 100}).withMessage('field must be from 1 to 100 chars')
+export const blogDescriptionValidation = body('description').isLength({min: 1, max: 500}).withMessage('field must be from 1 to 500 chars')
 
 export const postTitleValidation = body('title').trim().isLength({min: 1, max: 30}).withMessage('field must be from 1 to 30 chars')
 export const postShortDescrValidation = body('shortDescription').trim().isLength({min: 1, max: 100}).withMessage('field must be from 1 to 100 chars')
 export const postContentValidation = body('content').trim().isLength({min: 1, max: 1000}).withMessage('field must be from 1 to 1000 chars')
 export const postBlogIdValidation = body('blogId').trim().isLength({min: 1, max: 35}).withMessage('field must be string').custom(isBlogIdValid)
 
-export const userLoginValidation = body('login').trim().isLength({min: 3, max: 10}).withMessage('field must be from 1 to 30 chars')
-export const userPasswordValidation = body('password').trim().isLength({min: 6, max: 20}).withMessage('field must be from 1 to 30 chars')
+export const userLoginValidation = body('login').trim().isLength({min: 3, max: 10}).withMessage('field must be from 3 to 10 chars')
+export const userPasswordValidation = body('password').trim().isLength({min: 6, max: 20}).withMessage('field must be from 6 to 20 chars')
 export const userEmailValidation = body('email').custom(isValidEmail).withMessage('field must be email-format')
 
 export const commentContentValidation = body('content').trim().isLength({min: 20, max: 300}).withMessage('field must be from 20 to 300 chars')
