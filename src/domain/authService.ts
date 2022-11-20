@@ -32,8 +32,8 @@ export class AuthService {
         return true
     }
 
-    async registrationConfirmation(req: Request, res: Response){
-        return true
+    async registrationConfirmation(code: string){
+        return await this.usersRepo.updateUser(code)
     }
 
     async registration(login: string, password: string, email: string){

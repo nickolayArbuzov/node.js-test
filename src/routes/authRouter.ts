@@ -2,6 +2,7 @@ import {Router} from "express";
 import { container } from "../composition-root";
 import { AuthController } from "../controllers/authController";
 import { jwtMiddleware } from "../middlewares/authGuard";
+import { userEmailIsExistsValidation, userLoginIsExistsValidation, userCodeRegistrationIsValid } from "../middlewares/checkUserMiddleware";
 import { 
     inputValidationMiddleware,
     logger, userEmailValidation, userLoginValidation, userPasswordValidation, 
@@ -23,10 +24,14 @@ authRouter.post('/refresh-token',
 
 authRouter.post('/registration-confirmation', 
     logger,
+    userCodeRegistrationIsValid,
+    inputValidationMiddleware, 
         authController.registrationConfirmation.bind(authController))
 
 authRouter.post('/registration', 
     logger,
+    userLoginIsExistsValidation,
+    userEmailIsExistsValidation,
     userLoginValidation,
     userPasswordValidation,
     userEmailValidation,

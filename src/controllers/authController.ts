@@ -21,7 +21,8 @@ export class AuthController {
     }
 
     async registrationConfirmation(req: Request, res: Response){
-        res.send({})
+        await this.authService.registrationConfirmation(req.body.code)
+        res.sendStatus(204)
     }
 
     async registration(req: Request, res: Response){

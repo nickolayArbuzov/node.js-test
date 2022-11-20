@@ -56,6 +56,32 @@ export class UsersRepo {
         }
     }
 
+    async findByLoginOrEmail(loginOrEmail: string){
+        const user = await userCollection.findOne(
+            {$or: [
+                {"login": loginOrEmail},
+                {"email": loginOrEmail}
+            ]}
+            )
+        //@ts-ignore
+        delete Object.assign(user, {["id"]: user["_id"] })["_id"];
+        return user
+    }
+
+    async findByCode(code: string){
+        const user = await userCollection.findOne({"code": code})
+        if(user){
+            //@ts-ignore
+            delete Object.assign(user, {["id"]: user["_id"] })["_id"];
+        }
+        return user
+    }
+
+    async updateUser(code: string){
+        const user = await userCollection.updateOne({code: code}, {$set: {isActivated: true}})
+        return user.matchedCount === 1
+    }
+
     async create(user: UserInputType){
         await userCollection.insertOne(user)
         return {
