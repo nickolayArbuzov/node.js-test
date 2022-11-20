@@ -58,7 +58,7 @@ describe('/users', () => {
         realUserId = res.body.items[1].id
     })
 
-    it('should return accesstoken with login by correct values', async () => {
+    /*it('should return accesstoken with login by correct values', async () => {
         const auth = await request(app).post('/auth/login').send(correctInputModelAuth).expect(200)
         accessToken = auth.body.accessToken
         expect(auth.body).toStrictEqual({
@@ -76,6 +76,6 @@ describe('/users', () => {
                 { message: 'field must be from 6 to 20 chars', field: 'password' },
                 { message: 'field must be email-format', field: 'email' },
             ]})
-    })
+    })*/
 
 })

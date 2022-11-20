@@ -62,9 +62,11 @@ export class UsersRepo {
                 {"login": loginOrEmail},
                 {"email": loginOrEmail}
             ]}
-            )
-        //@ts-ignore
-        delete Object.assign(user, {["id"]: user["_id"] })["_id"];
+        )
+        if (user) {
+            //@ts-ignore
+            delete Object.assign(user, {["id"]: user["_id"] })["_id"];
+        }
         return user
     }
 
