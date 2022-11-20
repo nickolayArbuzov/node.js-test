@@ -1,6 +1,5 @@
 import express, {Request, Response} from 'express'
-
-import bodyParser from "body-parser";
+import cookieParser from 'cookie-parser'
 import {blogsRouter} from "./routes/blogsRouter";
 import {postsRouter} from "./routes/postsRouter";
 import { usersRouter } from './routes/usersRouter';
@@ -11,7 +10,8 @@ import { blogCollection, commentCollection, postCollection, userCollection } fro
 const port = process.env.PORT || 7777
 export const app = express()
 
-app.use(bodyParser.json())
+app.use(express.json())
+app.use(cookieParser())
 app.use('/blogs', blogsRouter) 
 app.use('/posts', postsRouter) 
 app.use('/users', usersRouter) 

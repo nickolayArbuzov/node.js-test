@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { userCollection } from "../repositories/db";
+import { jwtCollection, userCollection } from "../repositories/db";
 import bcrypt from 'bcrypt';
 import { jwtService } from "../application/jwtService";
 import { ObjectId } from "mongodb";
@@ -18,18 +18,26 @@ export class AuthService {
         if(!candidate) {
             return false
         }
-        console.log('candidate', candidate)
         const candidateHash = await bcrypt.hash(password, candidate.passwordSalt)
-//bcrypt.compare(password, )
+        //bcrypt.compare(password, )
         if(candidateHash === candidate.passwordHash && candidate) {
-            return jwtService.createJwt(candidate?.id?.toString() ? candidate?.id?.toString() : '')
+            const tokens = await jwtService.createJwt(candidate?.id?.toString() ? candidate?.id?.toString() : '')
+            await jwtCollection.insertOne({userId: candidate.id, refreshToken: tokens.refreshToken, revoke: false})
+            return tokens
         } else {
             return false
         }
     }
 
-    async refreshToken(req: Request, res: Response){
-        return true
+    async refreshToken(refreshToken: string){
+        const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
+        const user = await this.usersRepo.findById(refresh?.userId)
+        if(refresh && !refresh.revoke) {
+            const tokens = await jwtService.createJwt(user?.id?.toString() ? user?.id?.toString() : '')
+            await jwtCollection.insertOne({userId: user?.id, refreshToken: tokens.refreshToken, revoke: false})
+            await jwtCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
+            return tokens
+        } else return false
     }
 
     async registrationConfirmation(code: string){
@@ -63,8 +71,11 @@ export class AuthService {
         return true
     }
 
-    async logout(req: Request, res: Response){
-        return true
+    async logout(refreshToken: string){
+        const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
+        if(refresh && !refresh.revoke) {
+            await jwtCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
+        } else return false
     }
 
     async getMe(id: string){

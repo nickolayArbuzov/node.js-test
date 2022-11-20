@@ -14,6 +14,7 @@ export const authRouter = Router({})
 
 authRouter.post('/login', 
     logger,
+    
         authController.login.bind(authController))
 
 authRouter.post('/refresh-token', 

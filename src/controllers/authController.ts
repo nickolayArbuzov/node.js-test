@@ -10,14 +10,29 @@ export class AuthController {
     async login(req: Request, res: Response){
         const auth = await this.authService.login(req.body.loginOrEmail, req.body.password)
         if(auth) {
-            res.send(auth)
+
+            res.cookie('refreshToken', auth.refreshToken, {
+                httpOnly: true,
+                secure: true,
+            });
+
+            res.send({accessToken: auth.accessToken})
+            
         } else {
             res.sendStatus(401)
         }
     }
 
     async refreshToken(req: Request, res: Response){
-        res.send({})
+        const result = await this.authService.refreshToken(req.cookies.refreshToken)
+        if(result) {
+            res.cookie('refreshToken', result.refreshToken, {
+                httpOnly: true,
+                secure: true,
+            });
+            return { accessToken: result.accessToken };
+        } else res.sendStatus(401)
+        
     }
 
     async registrationConfirmation(req: Request, res: Response){
@@ -36,7 +51,10 @@ export class AuthController {
     }
 
     async logout(req: Request, res: Response){
-        res.send({})
+        const result = await this.authService.refreshToken(req.cookies.refreshToken)
+        if(result) {
+            res.sendStatus(204)
+        } else res.sendStatus(401)
     }
 
     async getMe(req: Request, res: Response){
