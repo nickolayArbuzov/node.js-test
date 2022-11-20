@@ -15,12 +15,12 @@ describe('/users', () => {
         email: "www.mail-2@mail.com",
     }
     let correctInputModelAuth = {
-        login: 'login-1',
+        loginOrEmail: 'nickarbuzov@yandex.by',
         password: "password-1",
     }
     let correctInputModelAuth2 = {
-        login: 'login-3',
-        password: "password-3",
+        loginOrEmail: 'login-2',
+        password: "password-2",
     }
     let incorrectPassInputModelAuth = {
         login: 'login-4',
@@ -65,16 +65,16 @@ describe('/users', () => {
             accessToken: expect.any(String)
         })
 
-        const auth2 = await request(app).post('/auth/login').send(correctInputModelAuth2)
+        const auth2 = await request(app).post('/auth/login').send(correctInputModelAuth2).expect(200)
         accessToken2 = auth2.body.accessToken
     })
     
     it('should return errors if values incorrect', async () => {
         await request(app).post('/auth/registration').send({}).expect(400, 
             {errorsMessages: [
-                { message: 'field must be from 3 to 10 chars', field: 'login' },
-                { message: 'field must be from 6 to 20 chars', field: 'password' },
-                { message: 'field must be email-format', field: 'email' },
+                { message: 'incorrect field', field: 'login' },
+                { message: 'incorrect field', field: 'email' },
+                { message: 'field must be from 6 to 20 chars', field: 'password' }
             ]})
     })
 

@@ -13,16 +13,16 @@ export class AuthService {
     constructor(@inject(UsersRepo) protected usersRepo: UsersRepo) {
     }
 
-    async login(login: string, password: string){
-        const candidate = await userCollection.findOne({login: login})
+    async login(loginOrEmail: string, password: string){
+        const candidate = await this.usersRepo.findByLoginOrEmail(loginOrEmail)
         if(!candidate) {
             return false
         }
-        
+        console.log('candidate', candidate)
         const candidateHash = await bcrypt.hash(password, candidate.passwordSalt)
 //bcrypt.compare(password, )
         if(candidateHash === candidate.passwordHash && candidate) {
-            return jwtService.createJwt(candidate._id.toString())
+            return jwtService.createJwt(candidate?.id?.toString() ? candidate?.id?.toString() : '')
         } else {
             return false
         }

@@ -8,7 +8,7 @@ export class AuthController {
     }
 
     async login(req: Request, res: Response){
-        const auth = await this.authService.login(req.body.login, req.body.password)
+        const auth = await this.authService.login(req.body.loginOrEmail, req.body.password)
         if(auth) {
             res.send(auth)
         } else {

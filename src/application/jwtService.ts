@@ -3,7 +3,7 @@ import {ObjectId} from "mongodb";
 
 export const jwtService = {
     async createJwt(id: string){
-        const token = jwt.sign({userId: id}, process.env.JWT_SECRET || 'secret', {expiresIn:'24h'})
+        const token = jwt.sign({userId: id}, process.env.JWT_SECRET || 'secret', {expiresIn:'10s'})
         return {accessToken: token}
     },
 
