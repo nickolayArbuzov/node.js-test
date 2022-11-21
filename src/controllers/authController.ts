@@ -30,7 +30,9 @@ export class AuthController {
                 httpOnly: true,
                 secure: true,
             });
+
             res.send({ accessToken: result.accessToken });
+             
         } else {
             res.sendStatus(401)
         }        
