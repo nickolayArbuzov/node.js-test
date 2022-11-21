@@ -6,7 +6,7 @@ import { UsersRepo } from '../repositories/usersRepo';
 
 
 export const logger = async (req: Request, res: Response, next: NextFunction) => {
-    await logCollection.insertOne({cookie: req.cookies, url: req.originalUrl})
+    await logCollection.insertOne({cookie: req.cookies, url: req.originalUrl, date: new Date()})
     next()
 }
 
