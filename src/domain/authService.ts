@@ -31,11 +31,11 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string){
-        /*try {
+        try {
             jwt.verify(refreshToken, process.env.JWT_SECRET || 'secret')
         } catch(e) {
             return false
-        }*/
+        }
         const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
         const user = await this.usersRepo.findById(refresh?.userId)
         if(refresh && !refresh.revoke) {
