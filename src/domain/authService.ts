@@ -31,19 +31,18 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string){
-        const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
         try {
             jwt.verify(refreshToken, process.env.JWT_SECRET || 'secret')
         } catch(e) {
-            logCollection.insertOne({e: e, date: new Date()})
             return false
         }
-       
+        const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
         const user = await this.usersRepo.findById(refresh?.userId)
         if(refresh && !refresh.revoke) {
             const tokens = await jwtService.createJwt(user?.id?.toString() ? user?.id?.toString() : '')
             await jwtCollection.insertOne({userId: user?.id, refreshToken: tokens.refreshToken, revoke: false})
             await jwtCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
+            logCollection.insertOne({tokens: tokens, date: new Date()})
             return tokens
         } else return false
     }
