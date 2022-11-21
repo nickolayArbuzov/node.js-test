@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { jwtCollection, userCollection } from "../repositories/db";
+import { jwtCollection, logCollection, userCollection } from "../repositories/db";
 import bcrypt from 'bcrypt';
 import { jwtService } from "../application/jwtService";
 import { ObjectId } from "mongodb";
@@ -7,6 +7,7 @@ import { UserInputType } from "../types";
 import { UsersRepo } from "../repositories/usersRepo";
 import { v4 } from "uuid";
 import { sendEmail } from "../adapters/mail.adapter";
+import jwt from 'jsonwebtoken'
 
 @injectable()
 export class AuthService {
@@ -31,6 +32,13 @@ export class AuthService {
 
     async refreshToken(refreshToken: string){
         const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
+        try {
+            jwt.verify(refreshToken, process.env.JWT_SECRET || 'secret')
+        } catch(e) {
+            logCollection.insertOne({e: e, date: new Date()})
+            return false
+        }
+       
         const user = await this.usersRepo.findById(refresh?.userId)
         if(refresh && !refresh.revoke) {
             const tokens = await jwtService.createJwt(user?.id?.toString() ? user?.id?.toString() : '')

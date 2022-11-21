@@ -65,6 +65,8 @@ describe('/users', () => {
             accessToken: expect.any(String)
         })
 
+        refreshToken = auth.header['set-cookie'][0].split(';')[0].split('=')[1]
+
         expect(auth.header['set-cookie'][0].split(';')[0].split('=')[0]).toBe('refreshToken')
 
         const auth2 = await request(app).post('/auth/login').send(correctInputModelAuth2).expect(200)
@@ -72,7 +74,7 @@ describe('/users', () => {
     })
 
     it('should refresh-tokens', async () => {
-        const auth = await request(app).post('/auth/refresh-token').set('Cookie', ['myApp-token=12345667', 'myApp-other=blah']).send(correctInputModelAuth).expect(200)
+        const auth = await request(app).post('/auth/refresh-token').set('Cookie', ["refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzdiNzM5OGE1YTczZDdlMTgzZDlmZDMiLCJpYXQiOjE2NjkwMzQ5MDcsImV4cCI6MTY2OTAzNDkyN30.OUg8_KwJNBkxOh_E0SeflRz2dU3TC5Ks1AhnAriV7x4"]).send(correctInputModelAuth).expect(200)
         accessToken = auth.body.accessToken
         expect(auth.body).toStrictEqual({
             accessToken: expect.any(String)

@@ -19,13 +19,13 @@ app.use('/auth', authRouter)
 app.use('/comments', commentsRouter) 
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-    await postCollection.deleteMany({})
-    await blogCollection.deleteMany({})
-    await userCollection.deleteMany({})
-    await commentCollection.deleteMany({})
-    await jwtCollection.deleteMany({})
-    await logCollection.deleteMany({})
-    res.sendStatus(204)
+    const p = postCollection.deleteMany({})
+    const b = blogCollection.deleteMany({})
+    const u = userCollection.deleteMany({})
+    const c = commentCollection.deleteMany({})
+    const j = jwtCollection.deleteMany({})
+    const l = logCollection.deleteMany({})
+    Promise.all([p, b, u, c, j, l]).then(() => res.sendStatus(204))
 }) 
 
 app.get('/', (req: Request, res: Response) => {
