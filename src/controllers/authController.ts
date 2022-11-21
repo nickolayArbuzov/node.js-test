@@ -30,9 +30,10 @@ export class AuthController {
                 httpOnly: true,
                 secure: true,
             });
-            return { accessToken: result.accessToken };
-        } else res.sendStatus(401)
-        
+            res.send({ accessToken: result.accessToken });
+        } else {
+            res.sendStatus(401)
+        }        
     }
 
     async registrationConfirmation(req: Request, res: Response){
@@ -54,7 +55,9 @@ export class AuthController {
         const result = await this.authService.refreshToken(req.cookies.refreshToken)
         if(result) {
             res.sendStatus(204)
-        } else res.sendStatus(401)
+        } else {
+            res.sendStatus(401)
+        }
     }
 
     async getMe(req: Request, res: Response){
