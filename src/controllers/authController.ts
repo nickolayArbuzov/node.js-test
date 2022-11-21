@@ -16,7 +16,7 @@ export class AuthController {
                 secure: true,
             });
 
-            res.send({accessToken: auth.accessToken})
+            res.status(200).send({accessToken: auth.accessToken})
             
         } else {
             res.sendStatus(401)
