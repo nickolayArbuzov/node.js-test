@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { jwtCollection, logCollection, userCollection } from "../repositories/db";
+import { logCollection, userCollection } from "../repositories/db";
 import bcrypt from 'bcrypt';
 import { jwtService } from "../application/jwtService";
 import { ObjectId } from "mongodb";
@@ -8,13 +8,17 @@ import { UsersRepo } from "../repositories/usersRepo";
 import { v4 } from "uuid";
 import { sendEmail } from "../adapters/mail.adapter";
 import jwt from 'jsonwebtoken'
+import { DevicesRepo } from "../repositories/devicesRepo";
 
 @injectable()
 export class AuthService {
-    constructor(@inject(UsersRepo) protected usersRepo: UsersRepo) {
-    }
+    constructor(
+        @inject(UsersRepo) protected usersRepo: UsersRepo,
+        @inject(DevicesRepo) protected devicesRepo: DevicesRepo
+    ) {}
 
-    async login(loginOrEmail: string, password: string){
+    async login(loginOrEmail: string, password: string, ip: string, deviceName: string){
+
         const candidate = await this.usersRepo.findByLoginOrEmail(loginOrEmail)
         if(!candidate) {
             return false
@@ -23,7 +27,8 @@ export class AuthService {
         //bcrypt.compare(password, )
         if(candidateHash === candidate.passwordHash && candidate) {
             const tokens = await jwtService.createJwt(candidate?.id?.toString() ? candidate?.id?.toString() : '')
-            await jwtCollection.insertOne({userId: candidate.id, refreshToken: tokens.refreshToken, revoke: false})
+            const deviceId = v4()
+            await this.devicesRepo.create(ip, deviceName, deviceId, candidate.id!)
             return tokens
         } else {
             return false

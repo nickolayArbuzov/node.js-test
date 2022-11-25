@@ -59,7 +59,11 @@ describe('/users', () => {
     })
 
     it('should return accesstoken with login by correct values', async () => {
-        const auth = await request(app).post('/auth/login').send(correctInputModelAuth).expect(200)
+        const auth = await request(app).post('/auth/login')
+            .set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36')
+            .send(correctInputModelAuth)
+            .expect(200)
+
         accessToken = auth.body.accessToken
         expect(auth.body).toStrictEqual({
             accessToken: expect.any(String)
@@ -73,13 +77,21 @@ describe('/users', () => {
         accessToken2 = auth2.body.accessToken
     })
 
-    it('should refresh-tokens', async () => {
+    /*it('should get devices', async () => {
+        const auth = await request(app).get('/security/devices').set('Cookie', ["refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzdiNzM5OGE1YTczZDdlMTgzZDlmZDMiLCJpYXQiOjE2NjkwMzQ5MDcsImV4cCI6MTY2OTAzNDkyN30.OUg8_KwJNBkxOh_E0SeflRz2dU3TC5Ks1AhnAriV7x4"]).send(correctInputModelAuth).expect(200)
+        accessToken = auth.body.accessToken
+        expect(auth.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
+    })*/
+
+    /*it('should refresh-tokens', async () => {
         const auth = await request(app).post('/auth/refresh-token').set('Cookie', ["refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzdiNzM5OGE1YTczZDdlMTgzZDlmZDMiLCJpYXQiOjE2NjkwMzQ5MDcsImV4cCI6MTY2OTAzNDkyN30.OUg8_KwJNBkxOh_E0SeflRz2dU3TC5Ks1AhnAriV7x4"]).send(correctInputModelAuth).expect(200)
         accessToken = auth.body.accessToken
         expect(auth.body).toStrictEqual({
             accessToken: expect.any(String)
         })
-    })
+    })*/
     
     it('should return errors if values incorrect', async () => {
         await request(app).post('/auth/registration').send({}).expect(400, 

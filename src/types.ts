@@ -42,3 +42,11 @@ export type CommentType = {
         postId: string,
         createdAt: string,
 }
+
+export type DeviceType = {
+        ip: string,
+        title: string,
+        lastActiveDate: string,
+        deviceId: string,
+        userId: string,
+}

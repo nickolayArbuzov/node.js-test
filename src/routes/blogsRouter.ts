@@ -13,7 +13,13 @@ import {
 import {
     authMiddleware
 } from '../middlewares/authGuard';
-import { pageNumberSanitizer, pageSizeSanitizer, searchNameTermSanitizer, sortBySanitizer, sortDirectionSanitizer } from "../middlewares/sanitazers";
+import { 
+    pageNumberSanitizer, 
+    pageSizeSanitizer, 
+    searchNameTermSanitizer, 
+    sortBySanitizer, 
+    sortDirectionSanitizer, 
+} from "../middlewares/sanitazers";
 
 const blogsController = container.resolve(BlogsController)
 

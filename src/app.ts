@@ -1,22 +1,25 @@
 import express, {Request, Response} from 'express'
 import cookieParser from 'cookie-parser'
+import { blogCollection, commentCollection, devicesCollection, jwtCollection, logCollection, postCollection, userCollection } from './repositories/db';
 import {blogsRouter} from "./routes/blogsRouter";
 import {postsRouter} from "./routes/postsRouter";
 import { usersRouter } from './routes/usersRouter';
 import { authRouter } from './routes/authRouter';
 import { commentsRouter } from './routes/commentsRouter';
-import { blogCollection, commentCollection, jwtCollection, logCollection, postCollection, userCollection } from './repositories/db';
+import { devicesRouter } from './routes/devicesRouter';
 
 const port = process.env.PORT || 7777
 export const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+app.set('trust proxy', true)
 app.use('/blogs', blogsRouter) 
 app.use('/posts', postsRouter) 
 app.use('/users', usersRouter) 
 app.use('/auth', authRouter) 
 app.use('/comments', commentsRouter) 
+app.use('/security/devices', devicesRouter) 
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
     const p = postCollection.deleteMany({})
@@ -25,9 +28,11 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     const c = commentCollection.deleteMany({})
     const j = jwtCollection.deleteMany({})
     const l = logCollection.deleteMany({})
-    Promise.all([p, b, u, c, j, l]).then(() => res.sendStatus(204))
+    const d = devicesCollection.deleteMany({})
+    await Promise.all([p, b, u, c, j, l, d])
+    res.sendStatus(204)
 }) 
 
-app.get('/', (req: Request, res: Response) => {
-    res.send({message: 'Inversify+'})
+app.get('/', async (req: Request, res: Response) => {
+    res.send({message: 'hello world'})
 })
