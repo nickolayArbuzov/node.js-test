@@ -28,6 +28,15 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
     next()
 }
 
+export const refreshTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken
+    if(!refreshToken) {
+        res.sendStatus(401)
+        return
+    }
+    next()
+}
+
 /*@injectable
 class joinMw {
     constructor(@inject jwtService: JWTService, @inject userService: UsersService){}

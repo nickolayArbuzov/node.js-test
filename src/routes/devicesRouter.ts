@@ -3,12 +3,13 @@ import { container } from "../composition-root";
 import { DevicesController } from "../controllers/devicesController";
 import { 
     inputValidationMiddleware, 
+    logger, 
     userEmailValidation,
     userLoginValidation,
     userPasswordValidation, 
 } from "../middlewares/middleware";
 import {
-    jwtMiddleware
+    refreshTokenMiddleware
 } from '../middlewares/authGuard';
 
 const devicesController = container.resolve(DevicesController)
@@ -16,13 +17,16 @@ const devicesController = container.resolve(DevicesController)
 export const devicesRouter = Router({})
 
 devicesRouter.get('/', 
-    jwtMiddleware,
+    logger,
+    refreshTokenMiddleware,
         devicesController.findByCurrentUserId.bind(devicesController))
 
 devicesRouter.delete('/', 
-    jwtMiddleware,
+    logger,
+    refreshTokenMiddleware,
         devicesController.delete.bind(devicesController))
 
 devicesRouter.delete('/:id', 
-    jwtMiddleware,
+    logger,
+    refreshTokenMiddleware,
         devicesController.deleteById.bind(devicesController))

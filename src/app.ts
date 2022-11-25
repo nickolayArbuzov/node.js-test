@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express'
 import cookieParser from 'cookie-parser'
+import cors from 'cors';
 import { blogCollection, commentCollection, devicesCollection, jwtCollection, logCollection, postCollection, userCollection } from './repositories/db';
 import {blogsRouter} from "./routes/blogsRouter";
 import {postsRouter} from "./routes/postsRouter";
@@ -13,7 +14,9 @@ export const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors())
 app.set('trust proxy', true)
+
 app.use('/blogs', blogsRouter) 
 app.use('/posts', postsRouter) 
 app.use('/users', usersRouter) 
@@ -27,9 +30,9 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     const u = userCollection.deleteMany({})
     const c = commentCollection.deleteMany({})
     const j = jwtCollection.deleteMany({})
-    const l = logCollection.deleteMany({})
+    //const l = logCollection.deleteMany({})
     const d = devicesCollection.deleteMany({})
-    await Promise.all([p, b, u, c, j, l, d])
+    await Promise.all([p, b, u, c, j, d])
     res.sendStatus(204)
 }) 
 
