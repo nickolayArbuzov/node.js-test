@@ -46,7 +46,8 @@ export type CommentType = {
 export type DeviceType = {
         ip: string,
         title: string,
-        lastActiveDate: string,
         deviceId: string,
+        issuedAt: number,
+        expiresAt: number,
         userId: string,
 }

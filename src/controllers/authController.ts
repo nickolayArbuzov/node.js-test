@@ -25,7 +25,7 @@ export class AuthController {
 
     async refreshToken(req: Request, res: Response){
         const result = await this.authService.refreshToken(req.cookies.refreshToken)
-        if(result) {
+        /*if(result) {
             res.cookie('refreshToken', result.refreshToken, {
                 httpOnly: true,
                 secure: true,
@@ -35,7 +35,8 @@ export class AuthController {
              
         } else {
             res.sendStatus(401)
-        }        
+        }  */      
+        res.sendStatus(200)
     }
 
     async registrationConfirmation(req: Request, res: Response){

@@ -18,15 +18,7 @@ export class DevicesRepo {
         })
     }
 
-    async create(ip: string, title: string, deviceId: string, userId: string){
-        const device: DeviceType = {
-            ip: ip,
-            title: title, 
-            deviceId: deviceId,
-            issuedAt: new Date().getTime(),
-            expiresAt: new Date().getTime() + 20000,
-            userId: userId,
-        }
+    async create(device: DeviceType){
         await devicesCollection.insertOne(device)
         return true
     }

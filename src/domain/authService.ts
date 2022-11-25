@@ -1,9 +1,9 @@
 import { injectable, inject } from "inversify";
-import { logCollection, userCollection } from "../repositories/db";
+import { devicesCollection, logCollection, userCollection } from "../repositories/db";
 import bcrypt from 'bcrypt';
 import { jwtService } from "../application/jwtService";
 import { ObjectId } from "mongodb";
-import { UserInputType } from "../types";
+import { DeviceType, UserInputType } from "../types";
 import { UsersRepo } from "../repositories/usersRepo";
 import { v4 } from "uuid";
 import { sendEmail } from "../adapters/mail.adapter";
@@ -26,9 +26,18 @@ export class AuthService {
         const candidateHash = await bcrypt.hash(password, candidate.passwordSalt)
         //bcrypt.compare(password, )
         if(candidateHash === candidate.passwordHash && candidate) {
-            const tokens = await jwtService.createJwt(candidate?.id?.toString() ? candidate?.id?.toString() : '')
             const deviceId = v4()
-            await this.devicesRepo.create(ip, deviceName, deviceId, candidate.id!)
+            const device: DeviceType = {
+                ip: ip,
+                title: deviceName, 
+                deviceId: deviceId,
+                issuedAt: new Date().getTime(),
+                expiresAt: new Date().getTime() + 20000,
+                userId: candidate.id!,
+            }
+            const tokens = await jwtService.createJwt(candidate?.id?.toString() ? candidate?.id?.toString() : '', device.deviceId, device.issuedAt)
+            
+            await this.devicesRepo.create(device)
             return tokens
         } else {
             return false
@@ -36,20 +45,23 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string){
+        let res
         try {
-            jwt.verify(refreshToken, process.env.JWT_SECRET || 'secret')
+            res = jwt.verify(refreshToken, process.env.JWT_SECRET || 'secret')
         } catch(e) {
             return false
         }
-        const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
-        const user = await this.usersRepo.findById(refresh?.userId)
+        console.log('res', res)
+        const refresh = await devicesCollection.findOne({refreshToken: refreshToken})
+        /*const user = await this.usersRepo.findById(refresh?.userId)
         if(refresh && !refresh.revoke) {
             const tokens = await jwtService.createJwt(user?.id?.toString() ? user?.id?.toString() : '')
-            await jwtCollection.insertOne({userId: user?.id, refreshToken: tokens.refreshToken, revoke: false})
-            await jwtCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
+            await devicesCollection.insertOne({userId: user?.id, refreshToken: tokens.refreshToken, revoke: false})
+            await devicesCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
             logCollection.insertOne({tokens: tokens, date: new Date()})
             return tokens
-        } else return false
+        } else return false*/
+        return true
     }
 
     async registrationConfirmation(code: string){
@@ -84,10 +96,11 @@ export class AuthService {
     }
 
     async logout(refreshToken: string){
-        const refresh = await jwtCollection.findOne({refreshToken: refreshToken})
+        /*const refresh = await devicesCollection.findOne({refreshToken: refreshToken})
         if(refresh && !refresh.revoke) {
-            await jwtCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
-        } else return false
+            await devicesCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
+        } else return false*/
+        return true
     }
 
     async getMe(id: string){
