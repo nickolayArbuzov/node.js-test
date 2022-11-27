@@ -30,9 +30,9 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     const u = userCollection.deleteMany({})
     const c = commentCollection.deleteMany({})
     const j = jwtCollection.deleteMany({})
-    //const l = logCollection.deleteMany({})
+    const l = logCollection.deleteMany({})
     const d = devicesCollection.deleteMany({})
-    await Promise.all([p, b, u, c, j, d])
+    await Promise.all([p, b, u, c, j, l, d])
     res.sendStatus(204)
 }) 
 

@@ -78,6 +78,12 @@ describe('/users', () => {
     })
 
     it('should get devices', async () => {
+        const res = await request(app)
+            .post('/auth/login')
+            .send(inputModelUser1).expect(201)
+           
+        const cookie = res.header
+        expect(cookie).toStrictEqual({})
         const devices = await request(app).get('/security/devices').set('Cookie', [`${refreshToken}`]).send(correctInputModelAuth).expect(200)
         expect(devices.body).toStrictEqual({})
     })

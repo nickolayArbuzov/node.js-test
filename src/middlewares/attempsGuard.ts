@@ -5,7 +5,7 @@ class AttemptsService {
     attempts: {ipPath: string, date: number}[] = [] 
     
     checkAttempts (ipPath: string) {
-      if(this.attempts.filter(a => a.ipPath === ipPath).length < 5) {
+      if(this.attempts.filter(a => a.ipPath === ipPath).length <= 5) {
         return true
       } else {
         return false
@@ -26,8 +26,10 @@ class AttemptsService {
 
 }
 
+const Attempts = new AttemptsService()
+
 export const attemptsMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const Attempts = new AttemptsService()
+    
     const ipPath = `${req.ip}${req.path}`
 
     Attempts.addAttempts(ipPath)

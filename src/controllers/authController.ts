@@ -11,10 +11,14 @@ export class AuthController {
         const auth = await this.authService.login(req.body.loginOrEmail, req.body.password, req.ip, req.headers['user-agent'] || '')
         if(auth) {
 
-            res.cookie('refreshToken', auth.refreshToken, {
-                httpOnly: true,
-                secure: true,
-            });
+            res.cookie(
+                'refreshToken', 
+                auth.refreshToken, 
+                {
+                    httpOnly: true,
+                    secure: true,
+                }
+            );
 
             res.send({accessToken: auth.accessToken})
             
