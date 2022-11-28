@@ -18,18 +18,25 @@ export class DevicesRepo {
         })
     }
 
-    async create(device: DeviceType){
-        await devicesCollection.insertOne(device)
-        return true
-    }
-
     async delete(userId: string, deviceId: string){
         const result = await devicesCollection.deleteMany({userId: userId, deviceId: {$ne: deviceId}})
         return result.deletedCount === 1
     }
 
     async deleteById(deviceId: string){
+        console.log('deviceId', deviceId)
         const result = await devicesCollection.deleteOne({deviceId: deviceId})
+        console.log('result', result)
         return result.deletedCount === 1
+    }
+
+    async create(device: DeviceType){
+        await devicesCollection.insertOne(device)
+        return true
+    }
+
+    async findById(deviceId: string){
+        const device = await devicesCollection.findOne({deviceId: deviceId})
+        return device
     }
 }

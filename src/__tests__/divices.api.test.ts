@@ -41,6 +41,8 @@ describe('/users', () => {
     let realUserId = ''
     let incorrectUserId = '000d727e3f7e0f76da66c064'
 
+    let deletedDeviceId = ''
+
     let cookie: any = []
 
     it('should delete all data', async () => {
@@ -67,9 +69,12 @@ describe('/users', () => {
             .send(correctInputModelAuth)
 
         refreshToken = auth.header['set-cookie'][0].split(';')[0].split('=')[1]
+        
         cookie = auth.header['set-cookie']
         const devices = await request(app)
             .get('/security/devices').set('Cookie', cookie)
+
+        deletedDeviceId = devices.body[3].deviceId
 
         expect(devices.body.length).toBe(4)
 
@@ -81,6 +86,26 @@ describe('/users', () => {
         })
     })
 
+    it('should delete device by deviceId', async () => {
+        await request(app)
+            .delete(`/security/devices/${deletedDeviceId}`).set('Cookie', cookie)
+
+        const devices = await request(app)
+            .get('/security/devices').set('Cookie', cookie)
+
+        expect(devices.body.length).toBe(3)
+    })
+
+    it('should delete incorrect device by deviceId', async () => {
+        await request(app)
+            .delete(`/security/devices/${deletedDeviceId}`).set('Cookie', cookie).expect(404)
+
+        const devices = await request(app)
+            .get('/security/devices').set('Cookie', cookie)
+
+        expect(devices.body.length).toBe(3)
+    })
+
     it('should delete devices exept current device current user', async () => {
         await request(app)
             .delete('/security/devices').set('Cookie', cookie)
@@ -88,17 +113,7 @@ describe('/users', () => {
         const devices = await request(app)
             .get('/security/devices').set('Cookie', cookie)
 
-            expect(devices.body.length).toBe(1)
-    })
-
-    it('should delete device by deviceId', async () => {
-        await request(app)
-            .delete('/security/devices/id').set('Cookie', cookie)
-
-        const devices = await request(app)
-            .get('/security/devices').set('Cookie', cookie)
-
-        expect(devices.body).toStrictEqual({})
+        expect(devices.body.length).toBe(1)
     })
 
 })

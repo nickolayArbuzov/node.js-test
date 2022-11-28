@@ -16,7 +16,8 @@ export class DevicesService {
         return await this.devicesRepo.delete(userId, deviceId)
     }
 
-    async deleteById(deivceId: string){
-        return await this.devicesRepo.deleteById(deivceId)
+    async deleteById(deviceId: string){
+        return await this.devicesRepo.deleteById(deviceId)
     }
+
 }
