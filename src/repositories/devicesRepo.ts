@@ -29,7 +29,6 @@ export class DevicesRepo {
     }
 
     async deleteById(deviceId: string){
-        console.log('deviceId', deviceId)
         const result = await devicesCollection.deleteOne({deviceId: deviceId})
         return result.deletedCount === 1
     }
