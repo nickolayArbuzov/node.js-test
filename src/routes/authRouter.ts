@@ -10,8 +10,10 @@ import {
     userEmailConfirmValidation, 
 } from "../middlewares/checkUserMiddleware";
 import { 
+    codeFromEmailValidation,
     inputValidationMiddleware,
     logger,
+    newPasswordValidation,
     userEmailValidation, 
     userLoginValidation, 
     userPasswordValidation, 
@@ -27,7 +29,21 @@ authRouter.post('/login',
     attemptsMiddleware,
         authController.login.bind(authController))
 
+authRouter.post('/password-recovery', 
+    attemptsMiddleware,
+    userEmailValidation,
+    inputValidationMiddleware, 
+        authController.passwordRecovery.bind(authController))
+
+authRouter.post('/new-password', 
+    attemptsMiddleware,
+    newPasswordValidation,
+    codeFromEmailValidation,
+    inputValidationMiddleware, 
+        authController.newPassword.bind(authController))
+
 authRouter.post('/refresh-token', 
+    refreshTokenMiddleware,
         authController.refreshToken.bind(authController))
 
 authRouter.post('/registration-confirmation', 

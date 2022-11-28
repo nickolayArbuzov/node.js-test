@@ -69,3 +69,5 @@ export const userEmailValidation = body('email').custom(isValidEmail).withMessag
 export const commentContentValidation = body('content').trim().isLength({min: 20, max: 300}).withMessage('field must be from 20 to 300 chars')
 
 export const codeFromEmailValidation = body('code').custom(isCodeFromEmailValid).withMessage('code not correct')
+
+export const newPasswordValidation = body('newPassword').trim().isLength({min: 6, max: 20}).withMessage('field must be from 6 to 20 chars')

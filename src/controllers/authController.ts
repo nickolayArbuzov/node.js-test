@@ -29,6 +29,17 @@ export class AuthController {
         }
     }
 
+    async passwordRecovery(req: Request, res: Response){
+        //password-recovery?recoveryCode
+        await this.authService.passwordRecovery
+        res.sendStatus(204)
+    }
+
+    async newPassword(req: Request, res: Response){
+        await this.authService.newPassword
+        res.sendStatus(204)
+    }
+
     async refreshToken(req: Request, res: Response){
         const result = await this.authService.refreshToken(req.cookies.refreshToken)
         if(result) {

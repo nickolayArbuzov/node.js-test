@@ -45,6 +45,14 @@ export class AuthService {
         }
     }
 
+    async passwordRecovery(code: string){
+        return await this.usersRepo.activateUserByCode(code)
+    }
+
+    async newPassword(code: string){
+        return await this.usersRepo.activateUserByCode(code)
+    }
+
     async refreshToken(refreshToken: string){
         const refresh = await jwtService.expandJwt(refreshToken)
         const issuedAt = new Date().getTime()
@@ -77,13 +85,13 @@ export class AuthService {
         }
 
         await this.usersRepo.create(user)
-        await sendEmail(email, code, 'confirm-email')
+        await sendEmail(email, code, 'confirm-email?code')
     }
 
     async registrationEmailResending(email: string){
         const code = v4()
         await this.usersRepo.resendUserNewCode(email, code)
-        await sendEmail(email, code, 'confirm-registration')
+        await sendEmail(email, code, 'confirm-registration?code')
         return true
     }
 
