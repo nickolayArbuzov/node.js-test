@@ -20,6 +20,7 @@ export class AuthService {
     async login(loginOrEmail: string, password: string, ip: string, deviceName: string){
 
         const candidate = await this.usersRepo.findByLoginOrEmail(loginOrEmail)
+        
         if(!candidate) {
             return false
         }
@@ -33,7 +34,7 @@ export class AuthService {
                 deviceId: deviceId,
                 issuedAt: new Date().getTime(),
                 expiresAt: new Date().getTime() + 20000,
-                userId: candidate.id!,
+                userId: candidate.id!.toString(),
             }
             const tokens = await jwtService.createJwt(candidate?.id?.toString() ? candidate?.id?.toString() : '', device.deviceId, device.issuedAt)
             
@@ -51,7 +52,6 @@ export class AuthService {
         } catch(e) {
             return false
         }
-        console.log('res', res)
         const refresh = await devicesCollection.findOne({refreshToken: refreshToken})
         /*const user = await this.usersRepo.findById(refresh?.userId)
         if(refresh && !refresh.revoke) {

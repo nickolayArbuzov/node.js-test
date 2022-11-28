@@ -8,10 +8,10 @@ export const jwtService = {
         return {accessToken: accessToken, refreshToken: refreshToken}
     },
 
-    async getUserByAccessToken(token: string){
+    async expandJwt(token: string){
       try{
           const result: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-          return new ObjectId(result.userId)
+          return result
       }
       catch(e){
           return null

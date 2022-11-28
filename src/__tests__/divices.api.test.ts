@@ -41,59 +41,64 @@ describe('/users', () => {
     let realUserId = ''
     let incorrectUserId = '000d727e3f7e0f76da66c064'
 
+    let cookie: any = []
+
     it('should delete all data', async () => {
         await request(app).delete('/testing/all-data').expect(204)
     })
 
-    it('should return registration user if values correct', async () => {
+    it('should return devices by userId', async () => {
+
         await request(app)
             .post('/auth/registration')
-            .send(inputModelUser1).expect(204)
-        await request(app)
-            .post('/auth/registration')
-            .send(inputModelUser2).expect(204)
+            .send(inputModelUser1)
 
-        const res = await request(app).get(`/users`).set('Authorization', 'Basic YWRtaW46cXdlcnR5')
-
-        realUserId = res.body.items[1].id
-    })
-
-    it('should return accesstoken with login by correct values', async () => {
         const auth = await request(app).post('/auth/login')
-            .set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36')
+            .set('user-agent', 'Mozilla')
             .send(correctInputModelAuth)
-            .expect(200)
-
-        accessToken = auth.body.accessToken
-        expect(auth.body).toStrictEqual({
-            accessToken: expect.any(String)
-        })
+        await request(app).post('/auth/login')
+            .set('user-agent', 'AppleWebKit')
+            .send(correctInputModelAuth)
+        await request(app).post('/auth/login')
+            .set('user-agent', 'Chrome')
+            .send(correctInputModelAuth)
+        await request(app).post('/auth/login')
+            .set('user-agent', 'Safari')
+            .send(correctInputModelAuth)
 
         refreshToken = auth.header['set-cookie'][0].split(';')[0].split('=')[1]
+        cookie = auth.header['set-cookie']
+        const devices = await request(app)
+            .get('/security/devices').set('Cookie', cookie)
 
-        expect(auth.header['set-cookie'][0].split(';')[0].split('=')[0]).toBe('refreshToken')
+        expect(devices.body.length).toBe(4)
 
-        const auth2 = await request(app).post('/auth/login').send(correctInputModelAuth2).expect(200)
-        accessToken2 = auth2.body.accessToken
+        expect(devices.body[0]).toStrictEqual({
+                ip: expect.any(String),
+                title: expect.any(String),
+                lastActiveDate: expect.any(String),
+                deviceId: expect.any(String)
+        })
     })
 
-    it('should get devices', async () => {
-        const res = await request(app)
-            .post('/auth/login')
-            .send(inputModelUser1).expect(201)
-           
-        const cookie = res.header
-        expect(cookie).toStrictEqual({})
-        const devices = await request(app).get('/security/devices').set('Cookie', [`${refreshToken}`]).send(correctInputModelAuth).expect(200)
+    it('should delete devices exept current device current user', async () => {
+        await request(app)
+            .delete('/security/devices').set('Cookie', cookie)
+
+        const devices = await request(app)
+            .get('/security/devices').set('Cookie', cookie)
+
+            expect(devices.body.length).toBe(1)
+    })
+
+    it('should delete device by deviceId', async () => {
+        await request(app)
+            .delete('/security/devices/id').set('Cookie', cookie)
+
+        const devices = await request(app)
+            .get('/security/devices').set('Cookie', cookie)
+
         expect(devices.body).toStrictEqual({})
     })
-
-    /*it('should refresh-tokens', async () => {
-        const auth = await request(app).post('/auth/refresh-token').set('Cookie', ["refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzdiNzM5OGE1YTczZDdlMTgzZDlmZDMiLCJpYXQiOjE2NjkwMzQ5MDcsImV4cCI6MTY2OTAzNDkyN30.OUg8_KwJNBkxOh_E0SeflRz2dU3TC5Ks1AhnAriV7x4"]).send(correctInputModelAuth).expect(200)
-        accessToken = auth.body.accessToken
-        expect(auth.body).toStrictEqual({
-            accessToken: expect.any(String)
-        })
-    })*/
 
 })

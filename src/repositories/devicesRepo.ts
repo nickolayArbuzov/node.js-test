@@ -23,13 +23,14 @@ export class DevicesRepo {
         return true
     }
 
-    async delete(userId: string){
-        const result = await devicesCollection.deleteMany({_id: new ObjectId(userId)})
+    async delete(userId: string, deviceId: string){
+        const result = await devicesCollection.deleteMany({userId: userId, deviceId: {$ne: deviceId}})
         return result.deletedCount === 1
     }
 
     async deleteById(deviceId: string){
-        const result = await devicesCollection.deleteOne({_id: new ObjectId(deviceId)})
+        console.log('deviceId', deviceId)
+        const result = await devicesCollection.deleteOne({deviceId: deviceId})
         return result.deletedCount === 1
     }
 }

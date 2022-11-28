@@ -19,12 +19,12 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
         return
     }
     const token = req.headers.authorization.split(' ')[1]
-    const userId = await jwtService.getUserByAccessToken(token);
-    if(!userId){
+    const refreshToken = await jwtService.expandJwt(token);
+    if(!refreshToken.userId){
         res.sendStatus(401)
         return
     }
-    req.user = await userService.findById(userId.toString());
+    req.user = await userService.findById(refreshToken.userId);
     next()
 }
 
@@ -55,13 +55,13 @@ class joinMw {
             }
             const token = req.headers.authorization.split(' ')[1]
         
-            const userId = await jwtService.getUserByAccessToken(token);
+            const refreshToken = await jwtService.expandJwt(token);
         
-            if(!userId){
+            if(!refreshToken.userId){
                 res.send(401)
                 return
             }
-            req.user = await userService.findById(userId.toString());
+            req.user = await userService.findById(!refreshToken.userId.toString());
             next()
         }
 }*/
