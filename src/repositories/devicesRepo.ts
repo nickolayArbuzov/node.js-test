@@ -13,7 +13,7 @@ export class DevicesRepo {
                 ip: d.ip,
                 title: d.title,
                 lastActiveDate: new Date(d.issuedAt).toISOString(),
-                deviceId: d._id.toString(),
+                deviceId: d.deviceId,
             }
         })
     }
