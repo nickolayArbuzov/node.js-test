@@ -46,22 +46,14 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string){
-        let res
-        try {
-            res = jwt.verify(refreshToken, process.env.JWT_SECRET || 'secret')
-        } catch(e) {
-            return false
-        }
-        const refresh = await devicesCollection.findOne({refreshToken: refreshToken})
-        /*const user = await this.usersRepo.findById(refresh?.userId)
+        const refresh = await jwtService.expandJwt(refreshToken)
+        const issuedAt = new Date().getTime()
+        const expiresAt = new Date().getTime() + 20000
         if(refresh && !refresh.revoke) {
-            const tokens = await jwtService.createJwt(user?.id?.toString() ? user?.id?.toString() : '')
-            await devicesCollection.insertOne({userId: user?.id, refreshToken: tokens.refreshToken, revoke: false})
-            await devicesCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
-            logCollection.insertOne({tokens: tokens, date: new Date()})
+            const tokens = await jwtService.createJwt(refresh.userId, refresh.deviceId, issuedAt)
+            await devicesCollection.updateOne({deviceId: refresh.deviceId}, {$set: {issuedAt: issuedAt, expiresAt: expiresAt}})
             return tokens
-        } else return false*/
-        return true
+        } else return false
     }
 
     async registrationConfirmation(code: string){
@@ -96,8 +88,7 @@ export class AuthService {
     }
 
     async logout(userId: string, deviceId: string){
-        const refresh = await devicesCollection.deleteOne({userId: userId, deviceId: deviceId})
-        console.log('refresh', refresh)
+        await devicesCollection.deleteOne({userId: userId, deviceId: deviceId})
         return true
     }
 

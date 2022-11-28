@@ -96,7 +96,15 @@ describe('/users', () => {
         expect(devices.body.length).toBe(3)
     })
 
-    it('should delete incorrect device by deviceId', async () => {
+    it('should refresh-token', async () => {
+        const result = await request(app).post('/auth/refresh-token').set('Cookie', cookie)
+
+        expect(result.body).toStrictEqual({
+            accessToken: expect.any(String)
+        })
+    })
+
+    it('should return 404, if trying delete incorrect device by deviceId', async () => {
         await request(app)
             .delete(`/security/devices/${deletedDeviceId}`).set('Cookie', cookie).expect(404)
 

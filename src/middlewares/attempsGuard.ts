@@ -29,7 +29,7 @@ class AttemptsService {
 const Attempts = new AttemptsService()
 
 export const attemptsMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    
+
     const ipPath = `${req.ip}${req.path}`
 
     Attempts.addAttempts(ipPath)

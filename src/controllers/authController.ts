@@ -18,7 +18,7 @@ export class AuthController {
                 {
                     httpOnly: true,
                     secure: true,
-                    maxAge: 24*60*60,
+                    maxAge: 24*60*60*1000,
                 }
             );
 
@@ -31,18 +31,17 @@ export class AuthController {
 
     async refreshToken(req: Request, res: Response){
         const result = await this.authService.refreshToken(req.cookies.refreshToken)
-        /*if(result) {
+        if(result) {
             res.cookie('refreshToken', result.refreshToken, {
                 httpOnly: true,
                 secure: true,
             });
 
-            res.send({ accessToken: result.accessToken });
+            res.status(200).send({ accessToken: result.accessToken });
              
         } else {
             res.sendStatus(401)
-        }  */      
-        res.sendStatus(200)
+        }      
     }
 
     async registrationConfirmation(req: Request, res: Response){
@@ -63,6 +62,7 @@ export class AuthController {
     async logout(req: Request, res: Response){
         const refreshToken = await jwtService.expandJwt(req.cookies.refreshToken)
         const result = await this.authService.logout(refreshToken.userId, refreshToken.deviceId)
+        // зануление куки
         if(result) {
             res.sendStatus(204)
         } else {
