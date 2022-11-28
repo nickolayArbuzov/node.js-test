@@ -1,6 +1,7 @@
 import { injectable, inject } from "inversify";
 import {Request, Response} from 'express'
 import { AuthService } from "../domain/authService";
+import { jwtService } from "../application/jwtService";
 
 @injectable()
 export class AuthController {
@@ -60,7 +61,8 @@ export class AuthController {
     }
 
     async logout(req: Request, res: Response){
-        const result = await this.authService.refreshToken(req.cookies.refreshToken)
+        const refreshToken = await jwtService.expandJwt(req.cookies.refreshToken)
+        const result = await this.authService.logout(refreshToken.userId, refreshToken.deviceId)
         if(result) {
             res.sendStatus(204)
         } else {

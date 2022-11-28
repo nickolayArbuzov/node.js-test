@@ -116,4 +116,14 @@ describe('/users', () => {
         expect(devices.body.length).toBe(1)
     })
 
+    it('should delete current device, if user logout', async () => {
+        await request(app)
+            .post('/auth/logout').set('Cookie', cookie)
+
+        const devices = await request(app)
+            .get('/security/devices').set('Cookie', cookie)
+
+        expect(devices.body.length).toBe(0)
+    })
+
 })

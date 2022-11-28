@@ -2,7 +2,7 @@ import {Router} from "express";
 import { container } from "../composition-root";
 import { AuthController } from "../controllers/authController";
 import { attemptsMiddleware } from "../middlewares/attempsGuard";
-import { jwtMiddleware } from "../middlewares/authGuard";
+import { jwtMiddleware, refreshTokenMiddleware } from "../middlewares/authGuard";
 import { 
     userEmailIsExistsValidation, 
     userLoginIsExistsValidation, 
@@ -54,6 +54,7 @@ authRouter.post('/registration-email-resending',
         authController.registrationEmailResending.bind(authController))
 
 authRouter.post('/logout', 
+    refreshTokenMiddleware,
         authController.logout.bind(authController))
 
 authRouter.get('/me', 

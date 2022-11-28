@@ -95,11 +95,9 @@ export class AuthService {
         return true
     }
 
-    async logout(refreshToken: string){
-        /*const refresh = await devicesCollection.findOne({refreshToken: refreshToken})
-        if(refresh && !refresh.revoke) {
-            await devicesCollection.updateOne({_id: new ObjectId(refresh._id)}, {$set: {revoke: true}})
-        } else return false*/
+    async logout(userId: string, deviceId: string){
+        const refresh = await devicesCollection.deleteOne({userId: userId, deviceId: deviceId})
+        console.log('refresh', refresh)
         return true
     }
 
