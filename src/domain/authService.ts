@@ -54,7 +54,7 @@ export class AuthService {
             await devicesCollection.updateOne({deviceId: refresh.deviceId}, {$set: {issuedAt: issuedAt, expiresAt: expiresAt}})
             return tokens
         } else return false
-    }
+    } 
 
     async registrationConfirmation(code: string){
         return await this.usersRepo.activateUserByCode(code)
