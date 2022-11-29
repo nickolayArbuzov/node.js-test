@@ -35,7 +35,7 @@ const isBlogIdValid: CustomValidator = async value => {
 
 const isCodeFromEmailValid: CustomValidator = async value => {
     const usersRepo = new UsersRepo()
-    const flag = await usersRepo.findById(value)
+    const flag = await usersRepo.findByCode(value)
     if (!flag) {
         throw new Error('Invalid Code')
     }
