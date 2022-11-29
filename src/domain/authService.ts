@@ -45,8 +45,10 @@ export class AuthService {
         }
     }
 
-    async passwordRecovery(code: string){
-        return await this.usersRepo.activateUserByCode(code)
+    async passwordRecovery(email: string){
+        const code = v4()
+        await this.usersRepo.resendUserNewCode(email, code)
+        await sendEmail(email, code, 'password-recovery?recoveryCode')
     }
 
     async newPassword(code: string){

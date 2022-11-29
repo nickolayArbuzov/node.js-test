@@ -30,8 +30,7 @@ export class AuthController {
     }
 
     async passwordRecovery(req: Request, res: Response){
-        //password-recovery?recoveryCode
-        await this.authService.passwordRecovery
+        await this.authService.passwordRecovery(req.body.email)
         res.sendStatus(204)
     }
 
