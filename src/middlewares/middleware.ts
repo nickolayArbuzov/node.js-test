@@ -37,7 +37,7 @@ const isCodeFromEmailValid: CustomValidator = async value => {
     const usersRepo = new UsersRepo()
     const flag = await usersRepo.findById(value)
     if (!flag) {
-        throw new Error('Invalid BlogID')
+        throw new Error('Invalid Code')
     }
     return true
 }
@@ -71,3 +71,4 @@ export const commentContentValidation = body('content').trim().isLength({min: 20
 export const codeFromEmailValidation = body('code').custom(isCodeFromEmailValid).withMessage('code not correct')
 
 export const newPasswordValidation = body('newPassword').trim().isLength({min: 6, max: 20}).withMessage('field must be from 6 to 20 chars')
+export const recoveryCodeValidation = body('recoveryCode').custom(isCodeFromEmailValid).withMessage('code not correct')
