@@ -35,7 +35,7 @@ export class AuthController {
     }
 
     async newPassword(req: Request, res: Response){
-        await this.authService.newPassword(req.body.newPassword, req.body.code)
+        await this.authService.newPassword(req.body.newPassword, req.body.recoveryCode)
         res.sendStatus(204)
     }
 

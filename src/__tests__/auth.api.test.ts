@@ -24,7 +24,7 @@ describe('/users', () => {
     }
     let newPassword = {
         newPassword: 'new-password',
-        recoveryCode: "3fc8ccc1-0b23-4c74-b4f0-7d26373bbc64",
+        recoveryCode: "b534bcd3-3e85-40b6-b8f0-37d1f10ba5fc",
     }
 
     let accessToken = ''
@@ -83,6 +83,13 @@ describe('/users', () => {
 
     it('should set new password', async () => {
         await request(app).post('/auth/new-password').send(newPassword)
+    })
+
+    it('should return 401 if trying login with old-password', async () => {
+        await request(app).post('/auth/login')
+            .set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36')
+            .send(correctInputModelAuth)
+            .expect(401)
     })
     
     it('should return errors if values incorrect', async () => {

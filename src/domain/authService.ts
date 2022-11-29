@@ -26,7 +26,7 @@ export class AuthService {
         }
         const candidateHash = await bcrypt.hash(password, candidate.passwordSalt)
         //bcrypt.compare(password, )
-        if(candidateHash === candidate.passwordHash && candidate) {
+        if(candidateHash === candidate.passwordHash) {
             const deviceId = v4()
             const device: DeviceType = {
                 ip: ip,
