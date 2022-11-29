@@ -77,17 +77,6 @@ describe('/users', () => {
         accessToken2 = auth2.body.accessToken
     })
 
-    it('should get devices', async () => {
-        const res = await request(app)
-            .post('/auth/login')
-            .send(inputModelUser1).expect(201)
-           
-        const cookie = res.header
-        expect(cookie).toStrictEqual({})
-        const devices = await request(app).get('/security/devices').set('Cookie', [`${refreshToken}`]).send(correctInputModelAuth).expect(200)
-        expect(devices.body).toStrictEqual({})
-    })
-
     /*it('should refresh-tokens', async () => {
         const auth = await request(app).post('/auth/refresh-token').set('Cookie', ["refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzdiNzM5OGE1YTczZDdlMTgzZDlmZDMiLCJpYXQiOjE2NjkwMzQ5MDcsImV4cCI6MTY2OTAzNDkyN30.OUg8_KwJNBkxOh_E0SeflRz2dU3TC5Ks1AhnAriV7x4"]).send(correctInputModelAuth).expect(200)
         accessToken = auth.body.accessToken
@@ -95,6 +84,10 @@ describe('/users', () => {
             accessToken: expect.any(String)
         })
     })*/
+
+    it('should password-recovery', async () => {
+        await request(app).post('/auth/password-recovery').send({email: 'nickarbuzov@yandex.by'})
+    })
     
     it('should return errors if values incorrect', async () => {
         await request(app).post('/auth/registration').send({}).expect(400, 

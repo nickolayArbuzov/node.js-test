@@ -10,6 +10,7 @@ export class AuthController {
 
     async login(req: Request, res: Response){
         const auth = await this.authService.login(req.body.loginOrEmail, req.body.password, req.ip, req.headers['user-agent'] || '')
+        console.log('auth', auth)
         if(auth) {
 
             res.cookie(
