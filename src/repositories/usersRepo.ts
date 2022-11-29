@@ -79,6 +79,11 @@ export class UsersRepo {
         return user
     }
 
+    async newPassword(passwordHash: string, passwordSalt: string, code: string){
+        await userCollection.updateOne({code: code}, {$set: {passwordHash: passwordHash, passwordSalt: passwordSalt}})
+        return 
+    }
+
     async activateUserByCode(code: string){
         const user = await userCollection.updateOne({code: code}, {$set: {isActivated: true}})
         return user.matchedCount === 1

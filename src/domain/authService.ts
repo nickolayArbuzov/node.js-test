@@ -51,8 +51,10 @@ export class AuthService {
         await sendEmail(email, code, 'password-recovery?recoveryCode')
     }
 
-    async newPassword(code: string){
-        return await this.usersRepo.activateUserByCode(code)
+    async newPassword(password: string, code: string){
+        const passwordSalt = await bcrypt.genSalt(8)
+        const passwordHash = await bcrypt.hash(password, passwordSalt)
+        return await this.usersRepo.newPassword(passwordHash, passwordSalt, code)
     }
 
     async refreshToken(refreshToken: string){
