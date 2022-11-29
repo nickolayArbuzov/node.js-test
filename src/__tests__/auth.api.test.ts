@@ -22,13 +22,9 @@ describe('/users', () => {
         loginOrEmail: 'login-2',
         password: "password-2",
     }
-    let incorrectPassInputModelAuth = {
-        login: 'login-4',
-        password: "password-5",
-    }
-    let incorrectInputModelAuth = {
-        login: 'login-5',
-        password: "password-5",
+    let newPassword = {
+        newPassword: 'new-password',
+        recoveryCode: "3fc8ccc1-0b23-4c74-b4f0-7d26373bbc64",
     }
 
     let accessToken = ''
@@ -85,8 +81,8 @@ describe('/users', () => {
         })
     })*/
 
-    it('should password-recovery', async () => {
-        await request(app).post('/auth/password-recovery').send({email: 'nickarbuzov@yandex.by'})
+    it('should set new password', async () => {
+        await request(app).post('/auth/new-password').send(newPassword)
     })
     
     it('should return errors if values incorrect', async () => {

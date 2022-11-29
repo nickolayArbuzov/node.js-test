@@ -10,7 +10,6 @@ export class AuthController {
 
     async login(req: Request, res: Response){
         const auth = await this.authService.login(req.body.loginOrEmail, req.body.password, req.ip, req.headers['user-agent'] || '')
-        console.log('auth', auth)
         if(auth) {
 
             res.cookie(
@@ -36,7 +35,7 @@ export class AuthController {
     }
 
     async newPassword(req: Request, res: Response){
-        await this.authService.newPassword(req.body.password, req.body.code)
+        await this.authService.newPassword(req.body.newPassword, req.body.code)
         res.sendStatus(204)
     }
 

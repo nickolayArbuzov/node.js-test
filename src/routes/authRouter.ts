@@ -38,7 +38,6 @@ authRouter.post('/password-recovery',
 authRouter.post('/new-password', 
     attemptsMiddleware,
     newPasswordValidation,
-    recoveryCodeValidation,
     inputValidationMiddleware, 
         authController.newPassword.bind(authController))
 

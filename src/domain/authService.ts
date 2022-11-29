@@ -73,7 +73,6 @@ export class AuthService {
     }
 
     async registration(login: string, password: string, email: string){
-
         const passwordSalt = await bcrypt.genSalt(8)
         const passwordHash = await bcrypt.hash(password, passwordSalt)
         const code = v4()
