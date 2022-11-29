@@ -80,7 +80,7 @@ export class UsersRepo {
     }
 
     async newPassword(passwordHash: string, passwordSalt: string, code: string){
-        await userCollection.updateOne({code: code}, {$set: {passwordHash: passwordHash, passwordSalt: passwordSalt}})
+        await userCollection.updateOne({code: code}, {$set: {passwordHash: passwordHash, passwordSalt: passwordSalt, isActivated: true}})
         return 
     }
 
