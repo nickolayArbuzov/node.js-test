@@ -80,15 +80,7 @@ export class UsersRepo {
     }
 
     async newPassword(passwordHash: string, passwordSalt: string, code: string){
-        console.log('code', code)
-        console.log('passwordHash', passwordHash)
-        const allusers = await userCollection.find({}).toArray()
-        const userprev = await userCollection.find({code: code}).toArray()
         await userCollection.updateOne({code: code}, {$set: {passwordHash: passwordHash, passwordSalt: passwordSalt, isActivated: true}})
-        const userafter = await userCollection.find({code: code}).toArray()
-        console.log('allusers', allusers)
-        console.log('userprev', userprev)
-        console.log('userafter', userafter)
         return 
     }
 

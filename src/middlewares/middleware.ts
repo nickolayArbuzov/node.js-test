@@ -19,7 +19,7 @@ const isValidUrl: CustomValidator = value => {
 
 const isValidEmail: CustomValidator = value => {
     if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)){
-        throw new Error('Invalid URL')
+        throw new Error('Invalid Email')
     }
     return true
 };
@@ -40,6 +40,13 @@ const isCodeFromEmailValid: CustomValidator = async value => {
         throw new Error('Invalid Code')
     }
     return true
+}
+
+const isLikeStatusValid: CustomValidator = async value => {
+    if(value === "None" || value === "Like" || value === "Dislike"){
+        return true
+    }
+    throw new Error('Invalid LikeStatus')
 }
     
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -72,3 +79,5 @@ export const codeFromEmailValidation = body('code').custom(isCodeFromEmailValid)
 
 export const newPasswordValidation = body('newPassword').trim().isLength({min: 6, max: 20}).withMessage('field must be from 6 to 20 chars')
 export const recoveryCodeValidation = body('recoveryCode').custom(isCodeFromEmailValid).withMessage('code not correct')
+
+export const likesValidation = body('likeStatus').custom(isLikeStatusValid).withMessage('status in not correct')

@@ -13,7 +13,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 }
 
 export const jwtMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const userService = container.resolve(UsersService)
     if(!req.headers.authorization){
         res.sendStatus(401)
         return
@@ -24,6 +23,7 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
         res.sendStatus(401)
         return
     }
+    const userService = container.resolve(UsersService)
     req.user = await userService.findById(refreshToken.userId);
     next()
 }

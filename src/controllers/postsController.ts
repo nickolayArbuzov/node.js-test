@@ -1,6 +1,7 @@
 import { injectable, inject } from "inversify";
 import {Request, Response} from 'express'
 import { PostsService } from "../domain/postsService";
+import { jwtService } from "../application/jwtService";
 
 @injectable()
 export class PostsController {
@@ -9,8 +10,14 @@ export class PostsController {
     ) {
     }
 
+    async like(req: Request, res: Response){
+        const result = await this.postsService.like(req.user!, req.body.likeStatus, req.params.id)
+        res.sendStatus(result ? 204 : 404)
+    }
+
     async findCommentbyPostId(req: Request, res: Response){
-        const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
+        const refreshToken = await jwtService.expandJwt(req.cookies.refreshToken)
+        const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection, refreshToken.userId)
         if(result) {
             res.send(result)
         } else {

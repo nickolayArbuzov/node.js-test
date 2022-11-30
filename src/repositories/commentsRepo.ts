@@ -2,9 +2,13 @@ import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
 import { CommentType } from "../types";
 import { commentCollection } from "./db";
+import { LikesRepo } from "./likesRepo";
 
 @injectable()
 export class CommentsRepo {
+    constructor(
+        @inject(LikesRepo) protected likesRepo: LikesRepo
+    ) {}
 
     async find(searchLoginTerm: any, searchEmailTerm: any, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
         const users = await commentCollection.find(
@@ -78,7 +82,7 @@ export class CommentsRepo {
         return result.deletedCount === 1
     }
 
-    async findCommentbyPostId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
+    async findCommentbyPostId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any, userId: string){
         const comments = await commentCollection.find({postId: id})
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
@@ -87,16 +91,18 @@ export class CommentsRepo {
 
         const totalCount = await commentCollection.countDocuments({postId: id})
 
-        const items = comments.map(c => {
-            return {
+        const items: any = []
+        for await (const c of comments) {
+            const likesInfo = await this.likesRepo.getLikesInfoForComment(c._id.toString(), userId)
+            items.push({
                 id: c._id,
                 content: c.content,
                 userId: c.userId,
                 userLogin: c.userLogin,
                 createdAt: c.createdAt,
-            }
-        })
-
+                likesInfo: likesInfo,
+            })
+        }
         return {    
             pagesCount: Math.ceil(totalCount/pageSize),
             page: pageNumber,

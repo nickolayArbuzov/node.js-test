@@ -1,20 +1,29 @@
 import { injectable, inject } from "inversify";
 import { CommentsRepo } from "../repositories/commentsRepo";
+import { LikesRepo } from "../repositories/likesRepo";
 import { PostsRepo } from "../repositories/postsRepo";
-import { UsersRepo } from "../repositories/usersRepo";
-import { CommentType, PostType } from "../types";
+import { CommentType, PostType, UserViewType } from "../types";
 
 @injectable()
 export class PostsService {
     constructor(
         @inject(PostsRepo) protected postsRepo: PostsRepo,
         @inject(CommentsRepo) protected сommentsRepo: CommentsRepo,
+        @inject(LikesRepo) protected likesRepo: LikesRepo
     ) {}
 
-    async findCommentbyPostId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
+    async like(user: UserViewType, likeStatus: string, postId: string){
+        const post = await this.postsRepo.findById(postId)
+        if (post) {
+            return await this.likesRepo.like(user, likeStatus, postId, null)
+        }
+        return post
+    }
+
+    async findCommentbyPostId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any, userId = ''){
         const candidatPost = await this.postsRepo.findById(id)
         if(candidatPost) {
-            return await this.сommentsRepo.findCommentbyPostId(id, pageNumber, pageSize, sortBy, sortDirection)
+            return await this.сommentsRepo.findCommentbyPostId(id, pageNumber, pageSize, sortBy, sortDirection, userId)
         }   
         return false
     }

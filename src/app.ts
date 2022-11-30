@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors';
-import { blogCollection, commentCollection, devicesCollection, logCollection, postCollection, userCollection } from './repositories/db';
+import { blogCollection, commentCollection, devicesCollection, likesCollection, logCollection, postCollection, userCollection } from './repositories/db';
 import {blogsRouter} from "./routes/blogsRouter";
 import {postsRouter} from "./routes/postsRouter";
 import { usersRouter } from './routes/usersRouter';
@@ -29,9 +29,10 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
     const b = blogCollection.deleteMany({})
     const u = userCollection.deleteMany({})
     const c = commentCollection.deleteMany({})
-    const l = logCollection.deleteMany({})
     const d = devicesCollection.deleteMany({})
-    await Promise.all([p, b, u, c, l, d])
+    const like = likesCollection.deleteMany({})
+    const l = logCollection.deleteMany({})
+    await Promise.all([p, b, u, c, d, like, l])
     res.sendStatus(204)
 }) 
 

@@ -4,6 +4,7 @@ import { PostsController } from "../controllers/postsController";
 import { 
     commentContentValidation, 
     inputValidationMiddleware, 
+    likesValidation, 
     postBlogIdValidation, 
     postContentValidation, 
     postShortDescrValidation, 
@@ -18,6 +19,12 @@ import { pageNumberSanitizer, pageSizeSanitizer, sortBySanitizer, sortDirectionS
 const postsController = container.resolve(PostsController)
 
 export const postsRouter = Router({})
+
+postsRouter.put('/:id/like-status', 
+    jwtMiddleware,
+    likesValidation,
+    inputValidationMiddleware, 
+        postsController.like.bind(postsController))
 
 postsRouter.get('/:id/comments', 
     pageNumberSanitizer, 

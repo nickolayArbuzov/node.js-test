@@ -17,6 +17,7 @@ import { CommentsRepo } from './repositories/commentsRepo'
 import { DevicesController } from './controllers/devicesController'
 import { DevicesService } from './domain/devicesService'
 import { DevicesRepo } from './repositories/devicesRepo'
+import { LikesRepo } from './repositories/likesRepo'
 
 export const container = new Container()
 
@@ -42,3 +43,5 @@ container.bind(CommentsRepo).to(CommentsRepo)
 container.bind(DevicesController).to(DevicesController)
 container.bind(DevicesService).to(DevicesService)
 container.bind(DevicesRepo).to(DevicesRepo)
+
+container.bind(LikesRepo).to(LikesRepo)
