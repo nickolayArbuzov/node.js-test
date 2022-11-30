@@ -19,7 +19,7 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
     }
     const token = req.headers.authorization.split(' ')[1]
     const refreshToken = await jwtService.expandJwt(token);
-    if(!refreshToken.userId){
+    if(!refreshToken){
         res.sendStatus(401)
         return
     }
