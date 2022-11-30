@@ -155,8 +155,8 @@ describe('/users', () => {
             createdAt: expect.any(String),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount: 0,
-                myStatus: "None",
+                dislikesCount: 1,
+                myStatus: "Dislike",
             }
         })
         const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken2}`)
@@ -168,7 +168,7 @@ describe('/users', () => {
             createdAt: expect.any(String),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount: 0,
+                dislikesCount: 1,
                 myStatus: "None",
             }
         })
@@ -188,8 +188,8 @@ describe('/users', () => {
             createdAt: expect.any(String),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount: 1,
-                myStatus: "Dislike",
+                dislikesCount: 0,
+                myStatus: "None",
             }
           })
         const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken2}`)
@@ -201,7 +201,7 @@ describe('/users', () => {
             createdAt: expect.any(String),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount: 1,
+                dislikesCount: 0,
                 myStatus: "None",
             }
           })
@@ -233,8 +233,8 @@ describe('/users', () => {
                     createdAt: expect.any(String),
                     likesInfo: {
                         likesCount: 0,
-                        dislikesCount: 1,
-                        myStatus: "Dislike",
+                        dislikesCount: 0,
+                        myStatus: "None",
                     }
                 },
             ]
@@ -265,7 +265,7 @@ describe('/users', () => {
                     createdAt: expect.any(String),
                     likesInfo: {
                         likesCount: 0,
-                        dislikesCount: 1,
+                        dislikesCount: 0,
                         myStatus: "None",
                     }
                 },
@@ -274,11 +274,21 @@ describe('/users', () => {
     })
 
     /*it('should one comment', async () => {
-        const commentUnknownForUser = await request(app).get(`/comments/${commentId1}`)
-        expect(commentUnknownForUser.body).toStrictEqual({})
-    })
+        await request(app).put(`/comments/${commentId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(like)
+        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken1}`)
+        expect(commentForFirstUser.body).toStrictEqual({
+            content: expect.any(String),
+            userId: expect.any(String),
+            userLogin: expect.any(String),
+            createdAt: expect.any(String),
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None",
+            }})
+    })*/
 
-    it('should all comments from post', async () => {
+    /*it('should all comments from post', async () => {
         const commentsByPostForUnknownUser = await request(app).get(`/posts/${postId1}/comments`)
         expect(commentsByPostForUnknownUser.body).toStrictEqual({})
     })*/

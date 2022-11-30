@@ -9,10 +9,16 @@ export class LikesRepo {
     async like(user: UserViewType, likeStatus: string, postId: string | null, commentId: string | null) {
 
         const likePosition = await likesCollection.findOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
-        if (likePosition) {
+        if(likePosition) {
             //const newStatus = likePosition.status === "None" ? likeStatus : "None" 
-            await likesCollection.deleteOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
-        } else {
+            if(likeStatus === 'None' || likeStatus === likePosition.status) {
+                await likesCollection.deleteOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
+            }
+            if(likeStatus !== likePosition.status) {
+                await likesCollection.updateOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null}, {$set: {status: likeStatus}})
+            }
+        } 
+        if(!likePosition && likeStatus !== 'None') {
             await likesCollection.insertOne({
                 userId: user.id!,
                 login: user.login,
