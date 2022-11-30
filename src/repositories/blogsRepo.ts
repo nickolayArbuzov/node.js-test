@@ -2,9 +2,13 @@ import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
 import { BlogType, PostType } from "../types";
 import { blogCollection, postCollection } from "./db";
+import { LikesRepo } from "./likesRepo";
 
 @injectable()
 export class BlogsRepo {
+    constructor(
+        @inject(LikesRepo) protected likesRepo: LikesRepo
+    ) {}
     async find(searchNameTerm: string, pageNumber: number, pageSize: number, sortBy: string, sortDirection: any){
         const blogs = await blogCollection.find({"name": {$regex: searchNameTerm, $options : 'i'}})
         .skip((pageNumber - 1) * pageSize)
@@ -66,7 +70,7 @@ export class BlogsRepo {
         }
     }
 
-    async findPostByBlogId(id: string, pageNumber: number, pageSize: number, sortBy: string, sortDirection: any){
+    async findPostByBlogId(id: string, pageNumber: number, pageSize: number, sortBy: string, sortDirection: any, userId: string){
         const blog = await blogCollection.findOne({_id: new ObjectId(id)})
         if(blog){
             const posts = await postCollection.find({blogId: id})
@@ -77,11 +81,20 @@ export class BlogsRepo {
 
             const totalCount = await postCollection.countDocuments({blogId: id});
 
-            const items = posts.map(p => {
-                //@ts-ignore
-                delete Object.assign(p, {["id"]: p["_id"] })["_id"];
-                return p
-            })
+            const items: any = []
+            for await (const p of posts) {
+                const extendedLikesInfo = await this.likesRepo.getLikesInfoForPost(p._id.toString(), userId)
+                items.push({
+                    id: p._id.toString(),
+                    title: p.title,
+                    shortDescription: p.shortDescription,
+                    content: p.content,
+                    blogId: p.blogId,
+                    blogName: p.blogName,
+                    createdAt: p.createdAt,
+                    extendedLikesInfo: extendedLikesInfo,
+                })
+            }
 
             return {    
                 pagesCount: Math.ceil(totalCount/pageSize),

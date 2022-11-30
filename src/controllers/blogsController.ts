@@ -27,7 +27,7 @@ export class BlogsController {
     }
 
     async findPostByBlogId(req: Request, res: Response){
-        const result = await this.blogsService.findPostByBlogId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
+        const result = await this.blogsService.findPostByBlogId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection, req.userId ? req.userId : '')
         if (result) {
             res.status(200).send(result)
         } else {

@@ -11,7 +11,7 @@ import {
     postTitleValidation 
 } from "../middlewares/middleware";
 import {
-    authMiddleware
+    authMiddleware, extractUserIdFromToken
 } from '../middlewares/authGuard';
 import { 
     pageNumberSanitizer, 
@@ -50,6 +50,7 @@ blogsRouter.post('/:id/posts',
         blogsController.createPostByBlogId.bind(blogsController))
 
 blogsRouter.get('/:id/posts', 
+    extractUserIdFromToken,
     searchNameTermSanitizer, 
     pageNumberSanitizer, 
     pageSizeSanitizer, 

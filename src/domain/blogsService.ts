@@ -34,8 +34,8 @@ export class BlogsService {
         return await this.blogsRepo.createPostByBlogId(id, post)
     }
 
-    async findPostByBlogId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
-        return await this.blogsRepo.findPostByBlogId(id, pageNumber, pageSize, sortBy, sortDirection)
+    async findPostByBlogId(id: string, pageNumber: number, pageSize: number, sortBy: any, sortDirection: any, userId = ''){
+        return await this.blogsRepo.findPostByBlogId(id, pageNumber, pageSize, sortBy, sortDirection, userId)
     }
 
     async findById(id: string){
