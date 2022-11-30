@@ -17,16 +17,13 @@ const devicesController = container.resolve(DevicesController)
 export const devicesRouter = Router({})
 
 devicesRouter.get('/', 
-    logger,
     refreshTokenMiddleware,
         devicesController.findByCurrentUserId.bind(devicesController))
 
 devicesRouter.delete('/', 
-    logger,
     refreshTokenMiddleware,
         devicesController.delete.bind(devicesController))
 
 devicesRouter.delete('/:id', 
-    logger,
     refreshTokenMiddleware,
         devicesController.deleteById.bind(devicesController))

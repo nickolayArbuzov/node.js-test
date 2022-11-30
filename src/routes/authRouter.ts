@@ -23,8 +23,6 @@ const authController = container.resolve(AuthController)
 
 export const authRouter = Router({})
 
-authRouter.use(logger)
-
 authRouter.post('/login', 
     attemptsMiddleware,
         authController.login.bind(authController))
