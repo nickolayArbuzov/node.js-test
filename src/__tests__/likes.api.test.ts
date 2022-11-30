@@ -188,8 +188,8 @@ describe('/users', () => {
             createdAt: expect.any(String),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount: 0,
-                myStatus: "None",
+                dislikesCount: 1,
+                myStatus: "Dislike",
             }
           })
         const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken2}`)
@@ -201,7 +201,7 @@ describe('/users', () => {
             createdAt: expect.any(String),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount: 0,
+                dislikesCount: 1,
                 myStatus: "None",
             }
           })
@@ -233,8 +233,8 @@ describe('/users', () => {
                     createdAt: expect.any(String),
                     likesInfo: {
                         likesCount: 0,
-                        dislikesCount: 0,
-                        myStatus: "None",
+                        dislikesCount: 1,
+                        myStatus: "Dislike",
                     }
                 },
             ]
@@ -265,7 +265,7 @@ describe('/users', () => {
                     createdAt: expect.any(String),
                     likesInfo: {
                         likesCount: 0,
-                        dislikesCount: 0,
+                        dislikesCount: 1,
                         myStatus: "None",
                     }
                 },

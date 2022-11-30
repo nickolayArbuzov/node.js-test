@@ -11,7 +11,7 @@ export class LikesRepo {
         const likePosition = await likesCollection.findOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
         if(likePosition) {
             //const newStatus = likePosition.status === "None" ? likeStatus : "None" 
-            if(likeStatus === 'None' || likeStatus === likePosition.status) {
+            if(likeStatus === 'None') {
                 await likesCollection.deleteOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
             }
             if(likeStatus !== likePosition.status) {
