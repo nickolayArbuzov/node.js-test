@@ -42,7 +42,6 @@ export class LikesRepo {
 
     async getLikesInfoForPost(postId: string, userId: string) {
         const likeInfo = await likesCollection.find({postId: postId}).toArray()
-        console.log('likeInfo', likeInfo)
         return {
             dislikesCount: likeInfo.filter(li => li.postId === postId && li.status === 'Dislike').length,
             likesCount: likeInfo.filter(li => li.postId === postId && li.status === 'Like').length, 
