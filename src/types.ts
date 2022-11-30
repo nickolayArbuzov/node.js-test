@@ -41,6 +41,11 @@ export type CommentType = {
         userLogin: string,
         postId: string,
         createdAt: string,
+        likesInfo: {
+                likesCount: number,
+                dislikesCount: number,
+                myStatus: string,
+        }
 }
 
 export type DeviceType = {
