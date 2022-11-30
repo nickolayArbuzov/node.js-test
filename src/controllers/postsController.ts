@@ -16,7 +16,7 @@ export class PostsController {
     }
 
     async findCommentbyPostId(req: Request, res: Response){
-        const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection, req.user?.id)
+        const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection, req.userId ? req.userId : '')
         if(result) {
             res.send(result)
         } else {

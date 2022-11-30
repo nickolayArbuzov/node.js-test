@@ -13,6 +13,7 @@ import {
 } from "../middlewares/middleware";
 import {
     authMiddleware,
+    extractUserIdFromToken,
     jwtMiddleware
 } from '../middlewares/authGuard';
 import { pageNumberSanitizer, pageSizeSanitizer, sortBySanitizer, sortDirectionSanitizer } from "../middlewares/sanitazers";
@@ -29,6 +30,7 @@ postsRouter.put('/:id/like-status',
 
 postsRouter.get('/:id/comments', 
     logger,
+    extractUserIdFromToken,
     pageNumberSanitizer, 
     pageSizeSanitizer, 
     sortBySanitizer, 

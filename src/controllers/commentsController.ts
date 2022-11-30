@@ -19,7 +19,7 @@ export class CommentsController {
     }
 
     async findOne(req: Request, res: Response){
-        const result = await this.commentsService.findOne(req.params.id, req.user?.id)
+        const result = await this.commentsService.findOne(req.params.id, req.userId ? req.userId : '')
         if(result) {
             res.send(result)
         } else {

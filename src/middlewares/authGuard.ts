@@ -28,6 +28,22 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
     next()
 }
 
+export const extractUserIdFromToken = async (req: Request, res: Response, next: NextFunction) => {
+    if(!req.headers.authorization){
+        next()
+        return
+    }
+    const token = req.headers.authorization.split(' ')[1]
+    const refreshToken = await jwtService.expandJwt(token);
+    if(!refreshToken){
+        next()
+        return
+    }
+
+    req.userId = refreshToken.userId;
+    next()
+}
+
 export const refreshTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken
     if(!refreshToken) {

@@ -8,6 +8,7 @@ import {
     logger,
 } from "../middlewares/middleware";
 import {
+    extractUserIdFromToken,
     jwtMiddleware
 } from '../middlewares/authGuard';
 
@@ -27,6 +28,7 @@ commentsRouter.get('/',
 
 commentsRouter.get('/:id', 
     logger,
+    extractUserIdFromToken,
         commentsController.findOne.bind(commentsController))
 
 commentsRouter.put('/:id', 

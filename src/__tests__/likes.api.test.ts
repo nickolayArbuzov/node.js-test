@@ -112,7 +112,7 @@ describe('/users', () => {
         await request(app).put(`/posts/${postId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(like)
         await request(app).put(`/comments/${commentId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(like)
 
-        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Cookie', cookie1)
+        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken1}`)
         expect(commentForFirstUser.body).toStrictEqual({
             id: expect.any(String),
             content: expect.any(String),
@@ -125,7 +125,7 @@ describe('/users', () => {
                 myStatus: "Like",
             }
         })
-        const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Cookie', cookie2)
+        const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken2}`)
         expect(commentForSecondUser.body).toStrictEqual({
             id: expect.any(String),
             content: expect.any(String),
@@ -146,7 +146,7 @@ describe('/users', () => {
         await request(app).put(`/posts/${postId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(dislike)
         await request(app).put(`/comments/${commentId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(dislike)
 
-        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Cookie', cookie1)
+        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken1}`)
         expect(commentForFirstUser.body).toStrictEqual({
             id: expect.any(String),
             content: expect.any(String),
@@ -159,7 +159,7 @@ describe('/users', () => {
                 myStatus: "None",
             }
         })
-        const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Cookie', cookie2)
+        const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken2}`)
         expect(commentForSecondUser.body).toStrictEqual({
             id: expect.any(String),
             content: expect.any(String),
@@ -179,7 +179,7 @@ describe('/users', () => {
         await request(app).put(`/posts/${postId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(dislike)
         await request(app).put(`/comments/${commentId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(dislike)
 
-        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Cookie', cookie1)
+        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken1}`)
         expect(commentForFirstUser.body).toStrictEqual({
             id: expect.any(String),
             content: expect.any(String),
@@ -192,7 +192,7 @@ describe('/users', () => {
                 myStatus: "Dislike",
             }
           })
-        const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Cookie', cookie2)
+        const commentForSecondUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken2}`)
         expect(commentForSecondUser.body).toStrictEqual({
             id: expect.any(String),
             content: expect.any(String),
@@ -208,7 +208,7 @@ describe('/users', () => {
     })
 
     it('should return posts with comments for both users', async () => {
-        const commentsByPostForFirstUser = await request(app).get(`/posts/${postId1}/comments`).set('Cookie', cookie1)
+        const commentsByPostForFirstUser = await request(app).get(`/posts/${postId1}/comments`).set('Authorization', `Bearer ${accessToken1}`)
         expect(commentsByPostForFirstUser.body).toStrictEqual({
             pagesCount: 1,
             page: 1,
@@ -240,7 +240,7 @@ describe('/users', () => {
             ]
         })
 
-        const commentsByPostForSecondUser = await request(app).get(`/posts/${postId1}/comments`).set('Cookie', cookie2)
+        const commentsByPostForSecondUser = await request(app).get(`/posts/${postId1}/comments`).set('Authorization', `Bearer ${accessToken2}`)
         expect(commentsByPostForSecondUser.body).toStrictEqual({
             pagesCount: 1,
             page: 1,
