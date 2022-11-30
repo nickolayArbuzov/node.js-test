@@ -43,8 +43,8 @@ export class PostsService {
         return false
     }
 
-    async find(pageNumber: number, pageSize: number, sortBy: any, sortDirection: any){
-        return await this.postsRepo.find(pageNumber, pageSize, sortBy, sortDirection)
+    async find(pageNumber: number, pageSize: number, sortBy: any, sortDirection: any, userId = ''){
+        return await this.postsRepo.find(pageNumber, pageSize, sortBy, sortDirection, userId)
     }
 
     async create(title: string, shortDescription: string, content: string, blogId: string, blogName: string){
@@ -60,8 +60,13 @@ export class PostsService {
         return await this.postsRepo.create(post)
     }
 
-    async findById(id: string){
-        return await this.postsRepo.findById(id)
+    async findById(id: string, userId = ''){
+        const post = await this.postsRepo.findById(id)
+        const extendedLikesInfo = await this.likesRepo.getLikesInfoForPost(id, userId)
+        return {
+            ...post,
+            extendedLikesInfo: extendedLikesInfo,
+        }
     }
 
     async update(id: string, post: PostType){

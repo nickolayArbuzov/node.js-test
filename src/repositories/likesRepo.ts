@@ -1,16 +1,15 @@
 import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
 import { LikeType, UserViewType } from "../types";
-import { likesCollection, logCollection,  } from "./db";
+import { likesCollection } from "./db";
 
 @injectable()
 export class LikesRepo {
 
     async like(user: UserViewType, likeStatus: string, postId: string | null, commentId: string | null) {
-        await logCollection.insertOne({user: user, likeStatus: likeStatus, commentId: commentId})
+
         const likePosition = await likesCollection.findOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
         if(likePosition) {
-            //const newStatus = likePosition.status === "None" ? likeStatus : "None" 
             if(likeStatus === 'None') {
                 await likesCollection.deleteOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
             }
@@ -41,9 +40,17 @@ export class LikesRepo {
         }
     }
 
-    async getLikesInfoForPost(postId: string) {
+    async getLikesInfoForPost(postId: string, userId: string) {
         const likeInfo = await likesCollection.find({postId: postId}).toArray()
-        return likeInfo
+        console.log('likeInfo', likeInfo)
+        return {
+            dislikesCount: likeInfo.filter(li => li.postId === postId && li.status === 'Dislike').length,
+            likesCount: likeInfo.filter(li => li.postId === postId && li.status === 'Like').length, 
+            myStatus: likeInfo.find(li => li.postId === postId && li.userId === userId) ? likeInfo.find(li => li.postId === postId && li.userId === userId)?.status : 'None',
+            newestLikes: [...likeInfo.sort((a, b) => a.addedAt > b.addedAt ? -1 : 1).slice(0, 3).map(l => {
+                return {addedAt: l.addedAt, userId: l.userId, login: l.login}
+            })]
+        }
     }
 
 }

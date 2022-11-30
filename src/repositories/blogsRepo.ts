@@ -54,6 +54,12 @@ export class BlogsRepo {
                 content: post.content,
                 blogId: post.blogId,
                 blogName: post.blogName,
+                extendedLikesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: "None",
+                    newestLikes: [],
+                }
             }
         } else {
             return false

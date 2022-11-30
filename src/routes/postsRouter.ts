@@ -43,6 +43,7 @@ postsRouter.post('/:id/comments',
         postsController.createCommentbyPostId.bind(postsController))
 
 postsRouter.get('/', 
+    extractUserIdFromToken,
     pageNumberSanitizer, 
     pageSizeSanitizer, 
     sortBySanitizer, 
@@ -59,6 +60,7 @@ postsRouter.post('/',
         postsController.create.bind(postsController))
 
 postsRouter.get('/:id', 
+    extractUserIdFromToken,
         postsController.findById.bind(postsController))
 
 postsRouter.put('/:id', 

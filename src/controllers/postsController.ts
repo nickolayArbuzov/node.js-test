@@ -34,7 +34,7 @@ export class PostsController {
     }
 
     async find(req: Request, res: Response){
-        const result = await this.postsService.find(+req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection)
+        const result = await this.postsService.find(+req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection, req.userId ? req.userId : '')
         res.send(result)
     }
 
@@ -44,7 +44,7 @@ export class PostsController {
     }
 
     async findById(req: Request, res: Response){
-        const post = await this.postsService.findById(req.params.id)
+        const post = await this.postsService.findById(req.params.id, req.userId ? req.userId : '')
         if(post) {
             res.status(200).send(post)
         } else {

@@ -273,45 +273,13 @@ describe('/users', () => {
         })
     })
 
-    /*it('should one comment', async () => {
-        await request(app).put(`/comments/${commentId1}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(like)
-        const commentForFirstUser = await request(app).get(`/comments/${commentId1}`).set('Authorization', `Bearer ${accessToken1}`)
-        expect(commentForFirstUser.body).toStrictEqual({
-            content: expect.any(String),
-            userId: expect.any(String),
-            userLogin: expect.any(String),
-            createdAt: expect.any(String),
-            likesInfo: {
-                likesCount: 0,
-                dislikesCount: 0,
-                myStatus: "None",
-            }})
-    })*/
-
-    /*it('should all comments from post', async () => {
-        const commentsByPostForUnknownUser = await request(app).get(`/posts/${postId1}/comments`)
-        expect(commentsByPostForUnknownUser.body).toStrictEqual({})
-    })*/
-
     // check some other standart validation
-    it('should return 404 for creating like by incorrect post', async () => {
-        await request(app).put(`/posts/${incorrectPostId}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(like).expect(404)
-    })
-
     it('should return 404 for creating like by incorrect comment', async () => {
         await request(app).put(`/comments/${incorrectCommentId}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send(like).expect(404)
     })
 
     it('should return 400 for creating like by incorrect input-data', async () => {
-        await request(app).put(`/posts/${incorrectPostId}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send().expect(400)
-    })
-
-    it('should return 400 for creating like by incorrect input-data', async () => {
         await request(app).put(`/comments/${incorrectCommentId}/like-status`).set('Authorization', `Bearer ${accessToken1}`).send().expect(400)
-    })
-
-    it('should return 401 for creating like without auth', async () => {
-        await request(app).put(`/posts/${incorrectPostId}/like-status`).send(like).expect(401)
     })
 
     it('should return 401 for creating like without auth', async () => {

@@ -23,7 +23,6 @@ export class CommentsService {
     }
 
     async findOne(id: string, userId = ''){
-  
         const comment = await this.commentsRepo.findOne(id)
         const likesInfo = await this.likesRepo.getLikesInfoForComment(id, userId)
         return {

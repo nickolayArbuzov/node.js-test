@@ -2,10 +2,15 @@ import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
 import { PostType } from "../types";
 import { postCollection } from "./db";
+import { LikesRepo } from "./likesRepo";
 
 @injectable()
 export class PostsRepo {
-    async find(pageNumber: number, pageSize: number, sortBy: string, sortDirection: any){
+    constructor(
+        @inject(LikesRepo) protected likesRepo: LikesRepo
+    ) {}
+    
+    async find(pageNumber: number, pageSize: number, sortBy: string, sortDirection: any, userId: string){
         const posts = await postCollection.find({})
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
@@ -14,12 +19,21 @@ export class PostsRepo {
 
         const totalCount = await postCollection.countDocuments({});
 
-        const items = posts.map(p => {
-            //@ts-ignore
-            delete Object.assign(p, {["id"]: p["_id"] })["_id"];
-            return p
-        })
-
+        const items: any = []
+        for await (const p of posts) {
+            const extendedLikesInfo = await this.likesRepo.getLikesInfoForPost(p._id.toString(), userId)
+            items.push({
+                id: p._id,
+                title: p.title,
+                shortDescription: p.shortDescription,
+                content: p.content,
+                blogId: p.blogId,
+                blogName: p.blogName,
+                createdAt: p.createdAt,
+                extendedLikesInfo: extendedLikesInfo,
+            })
+        }
+        
         return {    
             pagesCount: Math.ceil(totalCount/pageSize),
             page: pageNumber,
@@ -40,11 +54,18 @@ export class PostsRepo {
             content: post.content,
             blogId: post.blogId,
             blogName: post.blogName,
+            extendedLikesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None",
+                newestLikes: [],
+            }
         }
     }
 
     async findById(id: string){
         const post = await postCollection.findOne({_id: new ObjectId(id)})
+
         if(post) {
             return {
                 id: post._id,
