@@ -47,7 +47,7 @@ export class LikesRepo {
             dislikesCount: likeInfo.filter(li => li.postId === postId && li.status === 'Dislike').length,
             likesCount: likeInfo.filter(li => li.postId === postId && li.status === 'Like').length, 
             myStatus: likeInfo.find(li => li.postId === postId && li.userId === userId) ? likeInfo.find(li => li.postId === postId && li.userId === userId)?.status : 'None',
-            newestLikes: [...likeInfo.sort((a, b) => a.addedAt > b.addedAt ? -1 : 1).slice(0, 3).map(l => {
+            newestLikes: [...likeInfo.filter(l => l.status === 'Like').sort((a, b) => a.addedAt > b.addedAt ? -1 : 1).slice(0, 3).map(l => {
                 return {addedAt: l.addedAt, userId: l.userId, login: l.login}
             })]
         }
