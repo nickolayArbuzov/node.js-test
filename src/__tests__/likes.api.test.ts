@@ -208,8 +208,8 @@ describe('/users', () => {
     })
 
     it('should return posts with comments for both users', async () => {
-        const postForFirstUser = await request(app).get(`/posts/${postId1}/comments`).set('Cookie', cookie1)
-        expect(postForFirstUser.body).toStrictEqual({
+        const commentsByPostForFirstUser = await request(app).get(`/posts/${postId1}/comments`).set('Cookie', cookie1)
+        expect(commentsByPostForFirstUser.body).toStrictEqual({
             pagesCount: 1,
             page: 1,
             pageSize: 10,
@@ -240,8 +240,8 @@ describe('/users', () => {
             ]
         })
 
-        const postForSecondUser = await request(app).get(`/posts/${postId1}/comments`).set('Cookie', cookie2)
-        expect(postForSecondUser.body).toStrictEqual({
+        const commentsByPostForSecondUser = await request(app).get(`/posts/${postId1}/comments`).set('Cookie', cookie2)
+        expect(commentsByPostForSecondUser.body).toStrictEqual({
             pagesCount: 1,
             page: 1,
             pageSize: 10,
@@ -272,6 +272,16 @@ describe('/users', () => {
             ]
         })
     })
+
+    /*it('should one comment', async () => {
+        const commentUnknownForUser = await request(app).get(`/comments/${commentId1}`)
+        expect(commentUnknownForUser.body).toStrictEqual({})
+    })
+
+    it('should all comments from post', async () => {
+        const commentsByPostForUnknownUser = await request(app).get(`/posts/${postId1}/comments`)
+        expect(commentsByPostForUnknownUser.body).toStrictEqual({})
+    })*/
 
     // check some other standart validation
     it('should return 404 for creating like by incorrect post', async () => {
