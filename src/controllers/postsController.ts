@@ -16,8 +16,7 @@ export class PostsController {
     }
 
     async findCommentbyPostId(req: Request, res: Response){
-        const refreshToken = await jwtService.expandJwt(req.cookies.refreshToken)
-        const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection, refreshToken ? refreshToken.userId : '')
+        const result = await this.postsService.findCommentbyPostId(req.params.id, +req.query.pageNumber!, +req.query.pageSize!, req.query.sortBy, req.query.sortDirection, req.user?.id)
         if(result) {
             res.send(result)
         } else {

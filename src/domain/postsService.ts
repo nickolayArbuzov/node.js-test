@@ -37,11 +37,6 @@ export class PostsService {
                 userLogin: userLogin,
                 postId: id,
                 createdAt: new Date().toISOString(),
-                likesInfo: {
-                    likesCount: 0,
-                    dislikesCount: 0,
-                    myStatus: "None",
-                }
             }
             return await this.сommentsRepo.createCommentbyPostId(comment)
         }  

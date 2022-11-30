@@ -19,8 +19,7 @@ export class CommentsController {
     }
 
     async findOne(req: Request, res: Response){
-        const refreshToken = await jwtService.expandJwt(req.cookies.refreshToken)
-        const result = await this.commentsService.findOne(req.params.id, refreshToken ? refreshToken.userId : '')
+        const result = await this.commentsService.findOne(req.params.id, req.user?.id)
         if(result) {
             res.send(result)
         } else {
