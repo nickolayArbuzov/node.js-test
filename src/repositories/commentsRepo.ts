@@ -121,6 +121,11 @@ export class CommentsRepo {
             userId: comment.userId,
             userLogin: comment.userLogin,
             createdAt: comment.createdAt,
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None",
+            },
         }
     }
 }

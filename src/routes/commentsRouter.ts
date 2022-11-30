@@ -5,6 +5,7 @@ import {
     inputValidationMiddleware, 
     commentContentValidation,
     likesValidation,
+    logger,
 } from "../middlewares/middleware";
 import {
     jwtMiddleware
@@ -15,6 +16,7 @@ const commentsController = container.resolve(CommentsController)
 export const commentsRouter = Router({})
 
 commentsRouter.put('/:id/like-status', 
+    logger,
     jwtMiddleware,
     likesValidation,
     inputValidationMiddleware, 
