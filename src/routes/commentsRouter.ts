@@ -17,7 +17,6 @@ const commentsController = container.resolve(CommentsController)
 export const commentsRouter = Router({})
 
 commentsRouter.put('/:id/like-status', 
-    logger,
     jwtMiddleware,
     likesValidation,
     inputValidationMiddleware, 
@@ -27,7 +26,6 @@ commentsRouter.get('/',
         commentsController.find.bind(commentsController))
 
 commentsRouter.get('/:id', 
-    logger,
     extractUserIdFromToken,
         commentsController.findOne.bind(commentsController))
 
