@@ -29,7 +29,6 @@ postsRouter.put('/:id/like-status',
         postsController.like.bind(postsController))
 
 postsRouter.get('/:id/comments', 
-    logger,
     extractUserIdFromToken,
     pageNumberSanitizer, 
     pageSizeSanitizer, 

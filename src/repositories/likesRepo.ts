@@ -1,13 +1,13 @@
 import { injectable, inject } from "inversify";
 import { ObjectId } from "mongodb";
 import { LikeType, UserViewType } from "../types";
-import { likesCollection } from "./db";
+import { likesCollection, logCollection,  } from "./db";
 
 @injectable()
 export class LikesRepo {
 
     async like(user: UserViewType, likeStatus: string, postId: string | null, commentId: string | null) {
-
+        await logCollection.insertOne({user: user, likeStatus: likeStatus, commentId: commentId})
         const likePosition = await likesCollection.findOne({userId: user.id, postId: postId ? postId : null, commentId : commentId ? commentId : null})
         if(likePosition) {
             //const newStatus = likePosition.status === "None" ? likeStatus : "None" 
