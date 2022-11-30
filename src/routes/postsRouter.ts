@@ -5,6 +5,7 @@ import {
     commentContentValidation, 
     inputValidationMiddleware, 
     likesValidation, 
+    logger, 
     postBlogIdValidation, 
     postContentValidation, 
     postShortDescrValidation, 
@@ -27,6 +28,7 @@ postsRouter.put('/:id/like-status',
         postsController.like.bind(postsController))
 
 postsRouter.get('/:id/comments', 
+    logger,
     pageNumberSanitizer, 
     pageSizeSanitizer, 
     sortBySanitizer, 

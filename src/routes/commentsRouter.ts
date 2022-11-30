@@ -26,6 +26,7 @@ commentsRouter.get('/',
         commentsController.find.bind(commentsController))
 
 commentsRouter.get('/:id', 
+    logger,
         commentsController.findOne.bind(commentsController))
 
 commentsRouter.put('/:id', 
